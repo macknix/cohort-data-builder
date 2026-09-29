@@ -1,0 +1,184 @@
+pos,variable,variable_label,variable_type,measurement_level,spss_user_missing_values,value_labels_json
+1,BCSID,research case identifier,NA,NA,NA,[]
+2,SEX,Sex of cohort member,numeric,NOMINAL,3.0 thru None,"[{""value"":""1.0"",""label"":""Male""},{""value"":""2.0"",""label"":""Female""},{""value"":""3.0"",""label"":""Not Known""}]"
+3,FLAG_C,Document C completed,numeric,NOMINAL,-1.0 thru -2.0 and -4.0,"[{""value"":""-2.0"",""label"":""Not stated""},{""value"":""-1.0"",""label"":""No questionnaire""},{""value"":""1.0"",""label"":""Yes completed""},{""value"":""2.0"",""label"":""Not completed""}]"
+4,BVERSION,Studtest score -School or Home version of Document B,numeric,NOMINAL,-1.0 thru -2.0 and -4.0,"[{""value"":""-1.0"",""label"":""No questionnaire""},{""value"":""0.0"",""label"":""School version""},{""value"":""1.0"",""label"":""Home version""}]"
+5,ANS_A1,Question A1 (Skimming) answer given by cohort member,NA,NA,NA,[]
+6,ANS_A2,Question A2 (Skimming) answer given by cohort member,NA,NA,NA,[]
+7,ANS_A3,Question A3 (Skimming) answer given by cohort member,NA,NA,NA,[]
+8,ANS_A4,Question A4 (Skimming) answer given by cohort member,NA,NA,NA,[]
+9,ANS_A5,Question A5 (Skimming) answer given by cohort member,NA,NA,NA,[]
+10,ANS_A6,Question A6 (Skimming) answer given by cohort member,NA,NA,NA,[]
+11,ANS_A7,Question A7 (Skimming) answer given by cohort member,NA,NA,NA,[]
+12,ANS_A8,Question A8 (Skimming) answer given by cohort member,NA,NA,NA,[]
+13,ANS_A9,Question A9 (Skimming) answer given by cohort member,NA,NA,NA,[]
+14,ANS_A10,Question A10 (Skimming) answer given by cohort member,NA,NA,NA,[]
+15,ANS_B1,Question B1 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+16,ANS_B2,Question B2 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+17,ANS_B3,Question B3 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+18,ANS_B4,Question B4 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+19,ANS_B5,Question B5 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+20,ANS_B6,Question B6 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+21,ANS_B7,Question B7 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+22,ANS_B8,Question B8 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+23,ANS_B9,Question B9 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+24,ANS_B10,Question B10 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+25,ANS_B11,Question B11 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+26,ANS_B12,Question B12 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+27,ANS_B13,Question B13 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+28,ANS_B14,Question B14 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+29,ANS_B15,Question B15 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+30,ANS_B16,Question B16 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+31,ANS_B17,Question B17 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+32,ANS_B18,Question B18 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+33,ANS_B19,Question B19 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+34,ANS_B20,Question B20 (Vocabulary) answer given by cohort member,NA,NA,NA,[]
+35,ANS_C1,Question C1 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+36,ANS_C2,Question C2 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+37,ANS_C3,Question C3 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+38,ANS_C4,Question C4 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+39,ANS_C5,Question C5 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+40,ANS_C6,Question C6 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+41,ANS_C7,Question C7 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+42,ANS_C8,Question C8 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+43,ANS_C9,Question C9 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+44,ANS_C10,Question C10 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+45,ANS_C11,Question C11 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+46,ANS_C12,Question C12 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+47,ANS_C13,Question C13 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+48,ANS_C14,Question C14 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+49,ANS_C15,Question C15 (Reading for facts) answer given by cohort member,NA,NA,NA,[]
+50,ANS_D1,Question D1 (Points of view) answer given by cohort member,NA,NA,NA,[]
+51,ANS_D2,Question D2 (Points of view) answer given by cohort member,NA,NA,NA,[]
+52,ANS_D3,Question D3 (Points of view) answer given by cohort member,NA,NA,NA,[]
+53,ANS_D4,Question D4 (Points of view) answer given by cohort member,NA,NA,NA,[]
+54,ANS_D5,Question D5 (Points of view) answer given by cohort member,NA,NA,NA,[]
+55,ANS_D6,Question D6 (Points of view) answer given by cohort member,NA,NA,NA,[]
+56,ANS_D7,Question D7 (Points of view) answer given by cohort member,NA,NA,NA,[]
+57,ANS_D8,Question D8 (Points of view) answer given by cohort member,NA,NA,NA,[]
+58,ANS_D9,Question D9 (Points of view) answer given by cohort member,NA,NA,NA,[]
+59,ANS_D10,Question D10 (Points of view) answer given by cohort member,NA,NA,NA,[]
+60,ANS_D11,Question D11 (Points of view) answer given by cohort member,NA,NA,NA,[]
+61,ANS_D12,Question D12 (Points of view) answer given by cohort member,NA,NA,NA,[]
+62,ANS_D13,Question D13 (Points of view) answer given by cohort member,NA,NA,NA,[]
+63,ANS_D14,Question D14 (Points of view) answer given by cohort member,NA,NA,NA,[]
+64,ANS_D15,Question D15 (Points of view) answer given by cohort member,NA,NA,NA,[]
+65,ANS_D16,Question D16 (Points of view) answer given by cohort member,NA,NA,NA,[]
+66,ANS_D17,Question D17 (Points of view) answer given by cohort member,NA,NA,NA,[]
+67,ANS_E1,Question E1 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+68,ANS_E2,Question E2 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+69,ANS_E3,Question E3 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+70,ANS_E4,Question E4 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+71,ANS_E5,Question E5 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+72,ANS_E6,Question E6 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+73,ANS_E7,Question E7 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+74,ANS_E8,Question E8 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+75,ANS_E9,Question E9 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+76,ANS_E10,Question E10 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+77,ANS_E11,Question E11 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+78,ANS_E12,Question E12 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+79,ANS_E13,Question E13 (Comprehension) answer given by cohort member,NA,NA,NA,[]
+80,ANS_M1,Matrices question 1 answer given by cohort member,NA,NA,NA,[]
+81,ANS_M2,Matrices question 2 answer given by cohort member,NA,NA,NA,[]
+82,ANS_M3,Matrices question 3 answer given by cohort member,NA,NA,NA,[]
+83,ANS_M4,Matrices question 4 answer given by cohort member,NA,NA,NA,[]
+84,ANS_M5,Matrices question 5 answer given by cohort member,NA,NA,NA,[]
+85,ANS_M6,Matrices question 6 answer given by cohort member,NA,NA,NA,[]
+86,ANS_M7,Matrices question 7 answer given by cohort member,NA,NA,NA,[]
+87,ANS_M8,Matrices question 8 answer given by cohort member,NA,NA,NA,[]
+88,ANS_M9,Matrices question 9 answer given by cohort member,NA,NA,NA,[]
+89,ANS_M10,Matrices question 10 answer given by cohort member,NA,NA,NA,[]
+90,ANS_M11,Matrices question 11 answer given by cohort member,NA,NA,NA,[]
+91,SCR_A1,Question A1 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+92,SCR_A2,Question A2 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+93,SCR_A3,Question A3 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+94,SCR_A4,Question A4 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+95,SCR_A5,Question A5 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+96,SCR_A6,Question A6 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+97,SCR_A7,Question A7 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+98,SCR_A8,Question A8 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+99,SCR_A9,Question A9 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+100,SCR_A10,Question A10 (Skimming) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+101,SCR_B1,Question B1 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+102,SCR_B2,Question B2 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+103,SCR_B3,Question B3 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+104,SCR_B4,Question B4 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+105,SCR_B5,Question B5 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+106,SCR_B6,Question B6 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+107,SCR_B7,Question B7 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+108,SCR_B8,Question B8 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+109,SCR_B9,Question B9 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+110,SCR_B10,Question B10 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+111,SCR_B11,Question B11 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+112,SCR_B12,Question B12 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+113,SCR_B13,Question B13 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+114,SCR_B14,Question B14 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+115,SCR_B15,Question B15 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+116,SCR_B16,Question B16 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+117,SCR_B17,Question B17 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+118,SCR_B18,Question B18 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+119,SCR_B19,Question B19 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+120,SCR_B20,Question B20 (Vocabulary) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+121,SCR_C1,Question C1 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+122,SCR_C2,Question C2 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+123,SCR_C3,Question C3 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+124,SCR_C4,Question C4 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+125,SCR_C5,Question C5 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+126,SCR_C6,Question C6 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+127,SCR_C7,Question C7 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+128,SCR_C8,Question C8 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+129,SCR_C9,Question C9 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+130,SCR_C10,Question C10 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+131,SCR_C11,Question C11 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+132,SCR_C12,Question C12 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+133,SCR_C13,Question C13 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+134,SCR_C14,Question C14 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+135,SCR_C15,Question C15 (Reading for facts) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+136,SCR_D1,Question D1 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+137,SCR_D2,Question D2 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+138,SCR_D3,Question D3 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+139,SCR_D4,Question D4 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+140,SCR_D5,Question D5 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+141,SCR_D6,Question D6 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+142,SCR_D7,Question D7 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+143,SCR_D8,Question D8 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+144,SCR_D9,Question D9 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+145,SCR_D10,Question D10 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+146,SCR_D11,Question D11 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+147,SCR_D12,Question D12 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+148,SCR_D13,Question D13 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+149,SCR_D14,Question D14 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+150,SCR_D15,Question D15 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+151,SCR_D16,Question D16 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+152,SCR_D17,Question D17 (Points of view) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+153,SCR_E1,Question E1 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+154,SCR_E2,Question E2 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+155,SCR_E3,Question E3 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+156,SCR_E4,Question E4 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+157,SCR_E5,Question E5 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+158,SCR_E6,Question E6 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+159,SCR_E7,Question E7 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+160,SCR_E8,Question E8 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+161,SCR_E9,Question E9 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+162,SCR_E10,Question E10 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+163,SCR_E11,Question E11 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+164,SCR_E12,Question E12 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+165,SCR_E13,Question E13 (Comprehension) score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+166,SCR_M1,Matrices question 1 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+167,SCR_M2,Matrices question 2 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+168,SCR_M3,Matrices question 3 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+169,SCR_M4,Matrices question 4 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+170,SCR_M5,Matrices question 5 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+171,SCR_M6,Matrices question 6 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+172,SCR_M7,Matrices question 7 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+173,SCR_M8,Matrices question 8 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+174,SCR_M9,Matrices question 9 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+175,SCR_M10,Matrices question 10 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+176,SCR_M11,Matrices question 11 score,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""},{""value"":""0.0"",""label"":""Wrong""},{""value"":""1.0"",""label"":""Correct""}]"
+177,SCR_A,Total score for section A (Skimming) out of 10,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""}]"
+178,SCR_B,Total score for section B (Vocabulary) out of 20,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""}]"
+179,SCR_C,Total score for section C (Reading for facts) out of 15,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""}]"
+180,SCR_D,Total score for section D (Points of view) out of 17,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""}]"
+181,SCR_E,Total score for section E (Comprehension) out of 13,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""}]"
+182,SCR_M,Total score for Matrices tests out of 11,numeric,NOMINAL,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""}]"
+183,SCRTOTAL,Total score for all Reading tests out of 75,numeric,SCALE,-1.0 thru None,"[{""value"":""-1.0"",""label"":""Not answered""}]"

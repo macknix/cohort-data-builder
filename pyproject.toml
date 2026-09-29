@@ -1,0 +1,27 @@
+[project]
+name = "survey-merge"
+version = "0.1.0"
+description = "Search longitudinal survey variables, merge them, and tag them by topic."
+requires-python = ">=3.11"
+# The site build (build.py) needs none of these; they are for the tagging
+# pipeline (python -m enrich) and the tests.
+dependencies = [
+  "pydantic>=2.6",
+  "pyyaml>=6",
+  "langchain-core>=0.3",
+  "langchain-ollama>=0.2",
+  "rich>=13",
+]
+
+[project.optional-dependencies]
+test = ["pandas>=1.5", "pyreadstat>=1.2"]
+
+[project.scripts]
+enrich = "enrich.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["enrich"]

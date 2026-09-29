@@ -1,0 +1,647 @@
+{
+ "version": 1,
+ "name": "CLOSER topics (survey-merge edition)",
+ "hash": "c87a35ec8bc2",
+ "domains": [
+  {
+   "id": "demographics",
+   "label": "Demographics",
+   "description": "Basic characteristics of the cohort member and the people around them.",
+   "topics": [
+    {
+     "id": "age",
+     "label": "Age",
+     "description": "Age or date of birth, of the cohort member or anyone else."
+    },
+    {
+     "id": "gender",
+     "label": "Sex and gender",
+     "description": "Sex or gender, of the cohort member or anyone else."
+    },
+    {
+     "id": "ethnic_group",
+     "label": "Ethnic group",
+     "description": "Ethnicity, race, national identity."
+    },
+    {
+     "id": "place_of_birth",
+     "label": "Place of birth",
+     "description": "Country or place of birth, migration background."
+    },
+    {
+     "id": "languages",
+     "label": "Languages spoken",
+     "description": "Languages spoken at home or known; English as an additional language."
+    },
+    {
+     "id": "religion",
+     "label": "Religion",
+     "description": "Religious affiliation, belief and practice."
+    },
+    {
+     "id": "location",
+     "label": "Location and geography",
+     "description": "Country, region, local authority, urban/rural, geographic codes."
+    }
+   ]
+  },
+  {
+   "id": "housing_environment",
+   "label": "Housing and local environment",
+   "description": "The home, the neighbourhood and moving between them.",
+   "topics": [
+    {
+     "id": "housing",
+     "label": "Housing",
+     "description": "Tenure, dwelling type, rooms, housing costs, conditions, amenities, homelessness."
+    },
+    {
+     "id": "neighbourhood",
+     "label": "Neighbourhood",
+     "description": "Local area, its facilities, safety and deprivation (e.g. IMD)."
+    },
+    {
+     "id": "travel_transport",
+     "label": "Travel and transport",
+     "description": "Commuting, car access, journeys to school or work."
+    },
+    {
+     "id": "environmental_exposure",
+     "label": "Environmental exposure",
+     "description": "Pollution, noise, damp, second-hand smoke and similar exposures."
+    },
+    {
+     "id": "residential_mobility",
+     "label": "Residential mobility",
+     "description": "Moving home, number of addresses, housing histories."
+    }
+   ]
+  },
+  {
+   "id": "physical_health",
+   "label": "Physical health",
+   "description": "Bodily health, conditions and measurements.",
+   "topics": [
+    {
+     "id": "general_health",
+     "label": "General health",
+     "description": "Self-rated health, longstanding illness, limiting conditions."
+    },
+    {
+     "id": "cardiovascular_system",
+     "label": "Cardiovascular system",
+     "description": "Heart disease, blood pressure, circulation."
+    },
+    {
+     "id": "musculoskeletal_system",
+     "label": "Musculoskeletal system",
+     "description": "Bones, joints, muscles, back pain, arthritis."
+    },
+    {
+     "id": "respiratory_system",
+     "label": "Respiratory system",
+     "description": "Asthma, wheeze, bronchitis, lung function."
+    },
+    {
+     "id": "nervous_system",
+     "label": "Nervous system",
+     "description": "Epilepsy, migraine, neurological conditions."
+    },
+    {
+     "id": "digestive_system",
+     "label": "Digestive system",
+     "description": "Stomach, bowel and liver conditions."
+    },
+    {
+     "id": "urogenital_system",
+     "label": "Urogenital system",
+     "description": "Kidney, bladder, bedwetting, urinary conditions."
+    },
+    {
+     "id": "endocrine_system",
+     "label": "Endocrine system",
+     "description": "Diabetes, thyroid, hormonal conditions."
+    },
+    {
+     "id": "hemic_immune_systems",
+     "label": "Blood and immune system",
+     "description": "Anaemia, blood disorders, immune conditions."
+    },
+    {
+     "id": "hearing_vision_speech",
+     "label": "Hearing, vision and speech",
+     "description": "Eyesight, hearing, audiometry, speech problems."
+    },
+    {
+     "id": "oral_dental_health",
+     "label": "Oral and dental health",
+     "description": "Teeth, dental visits and treatment."
+    },
+    {
+     "id": "skin_conditions",
+     "label": "Skin conditions",
+     "description": "Eczema and other skin conditions."
+    },
+    {
+     "id": "congenital_conditions",
+     "label": "Congenital conditions",
+     "description": "Congenital malformations and conditions present at birth."
+    },
+    {
+     "id": "cancer",
+     "label": "Cancer",
+     "description": "Cancer diagnosis and treatment."
+    },
+    {
+     "id": "mortality",
+     "label": "Mortality",
+     "description": "Death of the cohort member or others, causes of death."
+    },
+    {
+     "id": "reproductive_health",
+     "label": "Reproductive health",
+     "description": "Fertility, contraception, infertility, reproductive conditions."
+    },
+    {
+     "id": "womens_health",
+     "label": "Women's health",
+     "description": "Menstruation, menopause, gynaecological health."
+    },
+    {
+     "id": "accidents_injuries",
+     "label": "Accidents and injuries",
+     "description": "Accidents, injuries, poisonings, burns."
+    },
+    {
+     "id": "allergies",
+     "label": "Allergies",
+     "description": "Allergies and hay fever."
+    },
+    {
+     "id": "infections",
+     "label": "Infections",
+     "description": "Infectious diseases, including Covid-19 infection."
+    },
+    {
+     "id": "anthropometry",
+     "label": "Anthropometry",
+     "description": "Height, weight, BMI, waist, body measurements."
+    },
+    {
+     "id": "physical_characteristics",
+     "label": "Physical characteristics",
+     "description": "Handedness, puberty, appearance and other physical traits."
+    },
+    {
+     "id": "physical_functioning",
+     "label": "Physical functioning",
+     "description": "Mobility, grip strength, disability, difficulty with daily activities."
+    }
+   ]
+  },
+  {
+   "id": "mental_health",
+   "label": "Mental health and mental processes",
+   "description": "Mental health, wellbeing, personality and cognition.",
+   "topics": [
+    {
+     "id": "mental_disorders",
+     "label": "Mental health conditions",
+     "description": "Depression, anxiety, psychological distress (e.g. Malaise, GHQ, Kessler), self-harm, diagnosed mental illness."
+    },
+    {
+     "id": "personality",
+     "label": "Personality and temperament",
+     "description": "Personality traits, temperament, locus of control, self-esteem."
+    },
+    {
+     "id": "wellbeing",
+     "label": "Wellbeing",
+     "description": "Life satisfaction, happiness, loneliness, quality of life."
+    },
+    {
+     "id": "emotions",
+     "label": "Emotions and behaviour",
+     "description": "Emotional and behavioural difficulties (e.g. Rutter, SDQ), feelings, anger, worry."
+    },
+    {
+     "id": "cognitive_function",
+     "label": "Cognitive function",
+     "description": "Tests and measures of cognition, memory, reasoning, attention."
+    }
+   ]
+  },
+  {
+   "id": "health_care",
+   "label": "Health care",
+   "description": "Use of health services and treatment.",
+   "topics": [
+    {
+     "id": "health_services",
+     "label": "Health services use",
+     "description": "GP visits, consultations, contact with health professionals."
+    },
+    {
+     "id": "hospital_admissions",
+     "label": "Hospital admissions",
+     "description": "Hospital stays, A&E, operations."
+    },
+    {
+     "id": "immunisations",
+     "label": "Immunisations",
+     "description": "Vaccinations, including Covid-19 vaccination."
+    },
+    {
+     "id": "medications",
+     "label": "Medications",
+     "description": "Prescribed and over-the-counter medicines."
+    },
+    {
+     "id": "complementary_therapies",
+     "label": "Complementary therapies",
+     "description": "Alternative and complementary treatments."
+    },
+    {
+     "id": "health_insurance",
+     "label": "Health insurance",
+     "description": "Private medical insurance."
+    }
+   ]
+  },
+  {
+   "id": "health_behaviour",
+   "label": "Health behaviour",
+   "description": "Lifestyle behaviours that affect health.",
+   "topics": [
+    {
+     "id": "diet_nutrition",
+     "label": "Diet and nutrition",
+     "description": "Food eaten, meals, nutrient intake, dieting."
+    },
+    {
+     "id": "physical_activity",
+     "label": "Physical activity",
+     "description": "Exercise, sport, sedentary time, accelerometry."
+    },
+    {
+     "id": "sleep",
+     "label": "Sleep",
+     "description": "Sleep duration, quality, problems."
+    },
+    {
+     "id": "smoking",
+     "label": "Smoking",
+     "description": "Tobacco and e-cigarette use."
+    },
+    {
+     "id": "alcohol",
+     "label": "Alcohol consumption",
+     "description": "Drinking frequency, amount, problem drinking (e.g. CAGE, AUDIT)."
+    },
+    {
+     "id": "substance_use",
+     "label": "Drug and substance use",
+     "description": "Cannabis and other drugs, solvents."
+    },
+    {
+     "id": "risk_taking",
+     "label": "Risk taking",
+     "description": "Risky behaviours not covered elsewhere, e.g. gambling."
+    },
+    {
+     "id": "sexual_behaviour",
+     "label": "Sexual behaviour",
+     "description": "Sexual activity, partners, orientation and identity."
+    }
+   ]
+  },
+  {
+   "id": "family_social",
+   "label": "Family and social networks",
+   "description": "The household, relationships and social life.",
+   "topics": [
+    {
+     "id": "home_life",
+     "label": "Home life",
+     "description": "Family routines and activities at home, family functioning."
+    },
+    {
+     "id": "household_composition",
+     "label": "Household composition",
+     "description": "Who lives in the household, household grids, household size."
+    },
+    {
+     "id": "marital_status",
+     "label": "Partnership and marital status",
+     "description": "Marriage, cohabitation, partnership histories, separation and divorce."
+    },
+    {
+     "id": "family_members",
+     "label": "Family members and relations",
+     "description": "Parents, siblings, children, relationships with them, contact with non-resident family."
+    },
+    {
+     "id": "friends",
+     "label": "Friends",
+     "description": "Friendships and peers."
+    },
+    {
+     "id": "childcare",
+     "label": "Childcare",
+     "description": "Childcare arrangements and costs."
+    },
+    {
+     "id": "child_welfare",
+     "label": "Child welfare",
+     "description": "Children in care, child protection, adversity in childhood."
+    },
+    {
+     "id": "social_support",
+     "label": "Social support",
+     "description": "Help and support given or received, caring for others."
+    },
+    {
+     "id": "leisure",
+     "label": "Leisure activities",
+     "description": "Hobbies, pastimes, reading, clubs, volunteering, media use."
+    },
+    {
+     "id": "social_capital",
+     "label": "Social capital",
+     "description": "Civic participation, trust, community involvement."
+    },
+    {
+     "id": "technology",
+     "label": "Technology",
+     "description": "Internet, computers, phones and their use."
+    }
+   ]
+  },
+  {
+   "id": "education",
+   "label": "Education",
+   "description": "Schooling, qualifications and skills.",
+   "topics": [
+    {
+     "id": "qualifications",
+     "label": "Qualifications",
+     "description": "Exams, qualifications held, highest qualification, grades."
+    },
+    {
+     "id": "further_higher_education",
+     "label": "Further and higher education",
+     "description": "College, sixth form, university, courses after 16."
+    },
+    {
+     "id": "training",
+     "label": "Training",
+     "description": "Work-related and vocational training, apprenticeships."
+    },
+    {
+     "id": "basic_skills",
+     "label": "Basic skills",
+     "description": "Literacy and numeracy in adulthood."
+    },
+    {
+     "id": "adult_education",
+     "label": "Adult education",
+     "description": "Education taken up in adulthood."
+    },
+    {
+     "id": "learning_difficulties",
+     "label": "Learning difficulties and SEN",
+     "description": "Special educational needs, dyslexia, learning difficulties."
+    },
+    {
+     "id": "pre_school",
+     "label": "Pre-school",
+     "description": "Nursery, playgroup and early education."
+    },
+    {
+     "id": "cognitive_skills",
+     "label": "Cognitive skills and attainment",
+     "description": "School attainment and ability test scores (reading, maths, vocabulary)."
+    },
+    {
+     "id": "non_cognitive_skills",
+     "label": "Non-cognitive skills",
+     "description": "Motivation, self-control, perseverance, social skills."
+    },
+    {
+     "id": "school_engagement",
+     "label": "School engagement",
+     "description": "Attitudes to school, attendance, truancy, exclusion, homework."
+    },
+    {
+     "id": "education_aspirations",
+     "label": "Educational aspirations",
+     "description": "Plans and hopes for education, including parents' aspirations."
+    },
+    {
+     "id": "lifelong_learning",
+     "label": "Lifelong learning",
+     "description": "Continuing learning across adult life."
+    },
+    {
+     "id": "primary_schooling",
+     "label": "Primary schooling",
+     "description": "Primary school, its type and characteristics."
+    },
+    {
+     "id": "secondary_schooling",
+     "label": "Secondary schooling",
+     "description": "Secondary school, its type and characteristics, school leaving."
+    }
+   ]
+  },
+  {
+   "id": "employment_income",
+   "label": "Employment and income",
+   "description": "Work, social position and money.",
+   "topics": [
+    {
+     "id": "employment",
+     "label": "Occupation and employment",
+     "description": "Economic activity, jobs, hours, occupation codes, unemployment, activity histories."
+    },
+    {
+     "id": "social_class",
+     "label": "Social classification",
+     "description": "Social class, NS-SEC, socio-economic group, occupational status."
+    },
+    {
+     "id": "income",
+     "label": "Income",
+     "description": "Earnings, household income, unfolding income brackets."
+    },
+    {
+     "id": "finances",
+     "label": "Finances",
+     "description": "Financial situation, debt, managing financially, savings behaviour, financial literacy."
+    },
+    {
+     "id": "assets",
+     "label": "Assets",
+     "description": "Savings, investments, property wealth."
+    },
+    {
+     "id": "consumption",
+     "label": "Consumption and expenditure",
+     "description": "Spending and what is bought."
+    },
+    {
+     "id": "pensions",
+     "label": "Pensions",
+     "description": "Pension schemes and contributions."
+    },
+    {
+     "id": "benefits",
+     "label": "Benefits and welfare",
+     "description": "State benefits and tax credits received."
+    }
+   ]
+  },
+  {
+   "id": "attitudes",
+   "label": "Expectations, attitudes and beliefs",
+   "description": "Views, values and expectations.",
+   "topics": [
+    {
+     "id": "social_attitudes",
+     "label": "Social attitudes",
+     "description": "Attitudes to society, gender roles, work, the future."
+    },
+    {
+     "id": "politics",
+     "label": "Politics",
+     "description": "Political interest, voting, party support."
+    }
+   ]
+  },
+  {
+   "id": "child_development",
+   "label": "Child development",
+   "description": "Early life and development.",
+   "topics": [
+    {
+     "id": "infant_feeding",
+     "label": "Infant feeding",
+     "description": "Breastfeeding, weaning, infant diet."
+    },
+    {
+     "id": "language_vocabulary",
+     "label": "Language and vocabulary",
+     "description": "Early language development and vocabulary."
+    },
+    {
+     "id": "parenting",
+     "label": "Parenting",
+     "description": "Parenting style, discipline, parental involvement and interest in the child."
+    },
+    {
+     "id": "developmental_milestones",
+     "label": "Developmental milestones",
+     "description": "Walking, talking, toilet training and other milestones."
+    }
+   ]
+  },
+  {
+   "id": "life_events",
+   "label": "Life events",
+   "description": "Significant events across the life course.",
+   "topics": [
+    {
+     "id": "retirement",
+     "label": "Retirement",
+     "description": "Retirement plans and timing."
+    },
+    {
+     "id": "crime_justice",
+     "label": "Crime and police contact",
+     "description": "Offending, arrests, police contact, victimisation by crime, antisocial behaviour."
+    },
+    {
+     "id": "bullying",
+     "label": "Bullying",
+     "description": "Being bullied or bullying others."
+    },
+    {
+     "id": "covid19",
+     "label": "Covid-19 pandemic",
+     "description": "Experiences of the pandemic and lockdowns, economic shocks since Covid-19."
+    },
+    {
+     "id": "adverse_events",
+     "label": "Adverse life events",
+     "description": "Bereavement, family breakdown, serious illness of others and other stressful events."
+    }
+   ]
+  },
+  {
+   "id": "omics",
+   "label": "Omics",
+   "description": "Biological samples and molecular data.",
+   "topics": [
+    {
+     "id": "genetics",
+     "label": "Genetics and genomics",
+     "description": "Genetic data, DNA samples. (CLOSER 11302-11306 folded in.)"
+    },
+    {
+     "id": "biomarkers",
+     "label": "Biomarkers",
+     "description": "Blood, saliva and other samples and what was measured from them."
+    }
+   ]
+  },
+  {
+   "id": "pregnancy",
+   "label": "Pregnancy",
+   "description": "Pregnancy and birth, of the cohort member's mother or of the cohort member.",
+   "topics": [
+    {
+     "id": "pregnancy_history",
+     "label": "Pregnancy",
+     "description": "Pregnancies, antenatal care, smoking or drinking in pregnancy, miscarriage."
+    },
+    {
+     "id": "childbirth",
+     "label": "Childbirth",
+     "description": "Delivery, birth weight, gestation, complications at birth."
+    },
+    {
+     "id": "infant_mortality",
+     "label": "Infant mortality",
+     "description": "Stillbirth, neonatal and infant death."
+    }
+   ]
+  },
+  {
+   "id": "administration",
+   "label": "Administration",
+   "description": "How the data were collected, rather than about the person.",
+   "topics": [
+    {
+     "id": "identifiers",
+     "label": "Identifiers and linkage",
+     "description": "Serial numbers, person and household identifiers, keys for linking records."
+    },
+    {
+     "id": "survey_weights",
+     "label": "Survey weights and design",
+     "description": "Weights, strata, clusters, sample design variables."
+    },
+    {
+     "id": "fieldwork",
+     "label": "Interview and fieldwork",
+     "description": "Interview dates, mode, interviewer checks, response and participation status, consent."
+    },
+    {
+     "id": "other",
+     "label": "Other",
+     "description": "Nothing else fits."
+    }
+   ]
+  }
+ ]
+}

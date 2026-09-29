@@ -1,0 +1,913 @@
+/* ==========================================================================
+   survey-merge
+
+   Palette is taken from Ordnance Survey mapping rather than the usual
+   editorial cream: drafting-film paper, deep ink, contour magenta as the
+   single accent, ochre for attention, moss for verified. The subject is a
+   life course being mapped, so map colours are the honest source.
+
+   Monospace is the DISPLAY face, not just the code face. Every noun in this
+   corpus is a code - a variable name, a value label, a file - so setting
+   headings in mono is true to the material. Body copy stays in a sans.
+   ========================================================================== */
+
+:root {
+  --paper:    #e9ece7;
+  --paper-2:  #f5f7f3;
+  --paper-3:  #dfe3dc;
+  --ink:      #131a22;
+  --ink-2:    #4d5862;
+  --ink-3:    #78838c;
+  --rule:     #c5ccc3;
+  --contour:  #8e2f6b;
+  --ochre:    #9a6410;
+  --moss:     #2c6b50;
+  --sea:      #2a5c8a;
+
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+
+  --step: 4px;
+  --rail: 400px;
+  --shadow: 0 1px 0 rgba(19, 26, 34, .04), 0 2px 10px -6px rgba(19, 26, 34, .18);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:   #11171b;
+    --paper-2: #192026;
+    --paper-3: #232c33;
+    --ink:     #e7ece7;
+    --ink-2:   #9aa6ac;
+    --ink-3:   #6d7a82;
+    --rule:    #2b353d;
+    --contour: #e879b8;
+    --ochre:   #d9a145;
+    --moss:    #6cc198;
+    --sea:     #82b8e8;
+    --shadow:  0 1px 0 rgba(0, 0, 0, .3), 0 2px 12px -6px rgba(0, 0, 0, .7);
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:   #11171b;  --paper-2: #192026;  --paper-3: #232c33;
+  --ink:     #e7ece7;  --ink-2:   #9aa6ac;  --ink-3:   #6d7a82;
+  --rule:    #2b353d;  --contour: #e879b8;  --ochre:   #d9a145;
+  --moss:    #6cc198;  --sea:     #82b8e8;
+  --shadow:  0 1px 0 rgba(0, 0, 0, .3), 0 2px 12px -6px rgba(0, 0, 0, .7);
+}
+:root[data-theme="light"] {
+  --paper:   #e9ece7;  --paper-2: #f5f7f3;  --paper-3: #dfe3dc;
+  --ink:     #131a22;  --ink-2:   #4d5862;  --ink-3:   #78838c;
+  --rule:    #c5ccc3;  --contour: #8e2f6b;  --ochre:   #9a6410;
+  --moss:    #2c6b50;  --sea:     #2a5c8a;
+  --shadow:  0 1px 0 rgba(19, 26, 34, .04), 0 2px 10px -6px rgba(19, 26, 34, .18);
+}
+
+* { box-sizing: border-box; }
+
+/* Any rule that sets `display` outranks the `hidden` attribute's UA default,
+   so a hidden .btn or .pinned stays on screen. Everything on this page that
+   toggles visibility does it with `hidden`, so it is settled once here. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--sea); }
+
+code, kbd { font-family: var(--mono); font-size: .92em; }
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 20;
+  background: var(--contour); color: #fff; padding: 8px 14px;
+}
+.skip:focus { left: 8px; top: 8px; }
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--contour);
+  outline-offset: 2px;
+}
+
+/* ── Masthead ─────────────────────────────────────────────────────── */
+
+.masthead {
+  position: sticky; top: 0; z-index: 30;
+  display: flex; align-items: center; gap: 20px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper-2);
+  flex-wrap: wrap;
+}
+
+.mark { display: flex; align-items: baseline; gap: 8px; margin-right: auto; }
+
+.mark-name {
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
+
+.mark-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--ink-3);
+}
+
+.views { display: flex; gap: 2px; }
+
+.view-tab {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 7px 13px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.view-tab:hover { color: var(--ink); background: var(--paper-3); }
+.view-tab.is-current {
+  color: var(--contour);
+  border-color: var(--rule);
+  background: var(--paper);
+  font-weight: 700;
+}
+
+.tally {
+  display: inline-block; min-width: 17px; margin-left: 5px;
+  padding: 0 4px; border-radius: 9px;
+  background: var(--contour); color: #fff;
+  font-size: 10px; text-align: center;
+}
+
+.theme {
+  width: 30px; height: 30px; padding: 0;
+  border: 1px solid var(--rule); border-radius: 2px;
+  background: var(--paper); cursor: pointer;
+}
+.theme::after { content: "◑"; color: var(--ink-2); font-size: 15px; }
+
+/* ── The overview ─────────────────────────────────────────────────────
+
+   One chart: its first row is every matching variable by sweep, and the rows
+   under it are the topics, a tree that is also the topic filter. Every row is
+   the same two columns — a label, then one column per sweep — so column n is
+   the same sweep all the way down. */
+
+:root { --grid-label: 270px; }
+
+.overview {
+  padding: 14px 20px 10px;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--rule);
+}
+.ov-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 6px 16px; margin-bottom: 10px;
+}
+.ov-about { margin: 0; max-width: 95ch; font-size: 13px; color: var(--ink-2); }
+.ov-about strong { color: var(--ink); font-weight: 600; }
+.ov-tools {
+  display: flex; gap: 14px;
+  font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);
+}
+.ov-tools select { width: auto; padding: 2px 4px; font-size: 11px; }
+
+.ov-row {
+  display: grid; grid-template-columns: var(--grid-label) minmax(0, 1fr);
+  align-items: center;
+}
+.ov-label {
+  display: flex; align-items: center; gap: 6px; min-width: 0;
+  padding-right: 14px;
+}
+.ov-count {
+  margin-left: auto; flex: 0 0 auto;
+  font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);
+}
+.ov-total .ov-label { align-self: start; padding-top: 12px; }
+.ov-total-name {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: var(--mono); font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--ink);
+}
+.ov-total .ov-count { font-size: 12px; font-weight: 700; color: var(--contour); }
+
+.spine-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  margin: 0; padding: 0; list-style: none;
+}
+
+.node {
+  display: flex; flex-direction: column; align-items: stretch; gap: 5px;
+  padding: 5px 3px 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  width: 100%;
+}
+.node:hover { background: var(--paper-3); }
+.node[aria-pressed="true"] { border-color: var(--contour); background: var(--paper); }
+
+.node-bar {
+  height: 26px;
+  display: flex; align-items: flex-end;
+  border-bottom: 2px solid var(--rule);
+}
+.node-fill {
+  width: 100%;
+  background: var(--contour);
+  min-height: 2px;
+  transition: height .18s ease;
+}
+/* Absence is information here, so an empty wave is drawn as a dashed void
+   rather than simply being a shorter bar. */
+.node.is-empty .node-bar { border-bottom-style: dashed; }
+.node.is-empty .node-fill { background: none; }
+
+.node-age {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: -.02em; color: var(--ink-2);
+}
+.node[aria-pressed="true"] .node-age { color: var(--contour); }
+.node-n { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+.node.is-empty .node-age, .node.is-empty .node-n { color: var(--ink-3); }
+
+
+.ov-topics { margin-top: 4px; padding-top: 2px; border-top: 1px solid var(--rule); }
+.ov-toggle {
+  display: flex; align-items: baseline; gap: 4px; width: 100%;
+  padding: 7px 0 5px; border: 0; background: none; cursor: pointer; text-align: left;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-2);
+  text-transform: uppercase; letter-spacing: .12em;
+}
+.ov-toggle:hover { color: var(--contour); }
+.tg-caret { display: inline-block; width: 1.1em; color: var(--contour); }
+.ov-hint {
+  margin-left: 12px; font-family: var(--sans); font-size: 12px; font-style: italic;
+  text-transform: none; letter-spacing: 0; color: var(--ink-3);
+}
+
+.tg-row { border-radius: 2px; }
+.tg-row:hover { background: var(--paper-3); }
+.tg-row.is-topic .ov-label { padding-left: 24px; }
+.tg-chev {
+  flex: 0 0 16px; padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--ink-3); font-size: 11px; line-height: 1;
+}
+.tg-chev:hover { color: var(--contour); }
+.tg-name {
+  display: flex; align-items: center; gap: 7px; min-width: 0;
+  padding: 1px 0; border: 0; background: none; cursor: pointer; text-align: left;
+  font: inherit; font-size: 13px; color: var(--ink);
+}
+.tg-row.is-topic .tg-name { font-size: 12.5px; color: var(--ink-2); }
+.tg-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tg-name:hover .tg-text { color: var(--contour); text-decoration: underline; }
+/* The box says what the filter holds: empty, full, or — for a domain with
+   some of its topics chosen — half. */
+.tg-box {
+  flex: 0 0 11px; height: 11px;
+  border: 1.5px solid var(--ink-3); border-radius: 2px;
+}
+.tg-row.is-on .tg-box { border-color: var(--contour); background: var(--contour); }
+.tg-row.is-part .tg-box {
+  border-color: var(--contour);
+  background: linear-gradient(to top right, var(--contour) 50%, transparent 50%);
+}
+.tg-row.is-on .tg-text { color: var(--contour); font-weight: 700; }
+
+.tg-cells {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 3px;
+  padding: 2px 0;
+}
+.tg-cell {
+  height: 13px; padding: 0; cursor: pointer;
+  border: 1px solid transparent; border-radius: 2px;
+}
+/* Absence drawn as a dashed void, as in the first row. */
+.tg-cell[data-l="0"] { background: none; border: 1px dashed var(--rule); }
+.tg-cell[data-l="1"] { background: color-mix(in srgb, var(--contour) 18%, transparent); }
+.tg-cell[data-l="2"] { background: color-mix(in srgb, var(--contour) 40%, transparent); }
+.tg-cell[data-l="3"] { background: color-mix(in srgb, var(--contour) 68%, transparent); }
+.tg-cell[data-l="4"] { background: var(--contour); }
+.tg-cell:hover { outline: 2px solid var(--ink); outline-offset: -1px; }
+.tg-cell.is-col { box-shadow: 0 0 0 1px var(--contour); }
+
+/* ── The filter bar ───────────────────────────────────────────────────
+   Stays in reach under the masthead while the list scrolls. */
+
+.filterbar {
+  position: sticky; top: var(--mast-h, 56px); z-index: 20;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  padding: 10px 20px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  box-shadow: var(--shadow);
+}
+.fb-search { flex: 1 1 300px; max-width: 520px; }
+.fb-search input { padding: 9px 12px; font-size: 14px; }
+.filterbar .chips { margin: 0; }
+.fb-end { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+#level { width: auto; padding: 6px 8px; font-size: 12px; }
+.fb-count { font-family: var(--mono); font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+.match-mode {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);
+}
+.match-mode button {
+  padding: 2px 7px; border: 1px solid var(--rule); border-radius: 2px;
+  background: var(--paper); color: var(--ink-2); cursor: pointer;
+  font-family: var(--mono); font-size: 10.5px;
+}
+.match-mode button[aria-pressed="true"] { border-color: var(--contour); color: var(--contour); font-weight: 700; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ── The variables ────────────────────────────────────────────────────
+   Scanned, not read: name, label in full, sweep, topics. The rest opens in
+   place. The header and every row share one set of columns. */
+
+.vtable { list-style: none; margin: 0; padding: 0 20px 8px; }
+/* Widths in px, not ch: the header and the rows are set in different fonts,
+   and a ch is a different width in each. */
+.vhead, .vrow-btn {
+  display: grid;
+  grid-template-columns: 136px minmax(0, 1fr) 52px minmax(0, 200px) 14px;
+  gap: 14px; align-items: baseline;
+}
+.vhead {
+  grid-template-columns: 28px 136px minmax(0, 1fr) 52px minmax(0, 200px) 14px;
+  padding: 12px 4px 6px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono); font-size: 10px; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: .1em;
+}
+/* Scrolled to, a row stops clear of the masthead and the filter bar. */
+.vrow { border-bottom: 1px solid var(--rule); scroll-margin-top: calc(var(--mast-h, 56px) + 80px); }
+.vrow:hover { background: var(--paper-2); }
+.vrow.is-open { background: var(--paper-2); box-shadow: inset 3px 0 0 var(--contour); }
+.vrow-main { display: flex; align-items: stretch; }
+.vrow:hover .add, .vrow .add:focus-visible { opacity: 1; }
+.vrow .add.is-none { cursor: default; }
+.vrow-btn {
+  flex: 1; min-width: 0;
+  padding: 8px 4px 8px 10px;
+  border: 0; background: none; cursor: pointer; text-align: left; font: inherit;
+}
+.v-name {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  letter-spacing: -.02em; color: var(--ink); overflow-wrap: anywhere;
+}
+.v-label { font-size: 14px; line-height: 1.4; color: var(--ink); }
+.v-wave { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.v-topics { display: flex; flex-wrap: wrap; gap: 4px; }
+.v-chev { color: var(--ink-3); font-size: 11px; text-align: right; }
+.vrow-btn:hover .v-name { color: var(--contour); }
+
+/* Opened: a few lines, in order of what decides whether to use it. */
+.vrow-more {
+  display: grid; gap: 8px;
+  padding: 0 16px 12px 42px;
+  font-size: 13px;
+}
+.vm-values {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 3px 16px;
+  color: var(--ink-2);
+}
+.vm-code { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink); }
+.vm-values.is-na { font-size: 12px; color: var(--ink-3); }
+.vm-values.is-na .vm-code { color: var(--ochre); font-weight: 400; }
+.vm-topics, .vm-also { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+.vm-key {
+  min-width: 10ch;
+  font-family: var(--mono); font-size: 10px; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: .1em;
+}
+.vm-topic, .vm-also-link {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  padding: 1px 7px; border: 1px solid var(--rule); border-radius: 2px;
+  background: var(--paper); color: var(--ink); cursor: pointer;
+  font: inherit; font-size: 12px;
+}
+.vm-also-link { font-family: var(--mono); }
+.vm-also-link .v-wave { font-size: 10.5px; color: var(--ink-3); }
+.vm-topic:hover, .vm-also-link:hover { border-color: var(--contour); color: var(--contour); }
+.vm-topic.is-below { opacity: .55; }
+.vm-pct { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
+.vm-meta {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+}
+.vm-dim { color: var(--ink-3); }
+.vm-note { margin: 0; font-size: 13px; color: var(--ink-3); }
+.vm-warn { color: var(--ochre); }
+.vempty { padding: 28px 0; color: var(--ink-2); }
+.vmore {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 20px 36px;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+}
+
+/* ── Layout ───────────────────────────────────────────────────────── */
+
+main { display: block; }
+
+.view { display: none; }
+.view.is-current {
+  display: grid; grid-template-columns: var(--rail) 1fr;
+  position: relative;   /* the grip below is positioned against this */
+}
+
+.pane { min-width: 0; }
+.view[data-view="search"].is-current { display: block; }
+.pane-list { border-right: 1px solid var(--rule); background: var(--paper-2); }
+.pane-detail { padding: 24px 28px 60px; }
+
+/* ── The pane divider ─────────────────────────────────────────────────
+
+   Absolutely positioned over the border rather than made a third grid track:
+   the two-column layout stays exactly as it was, and the hit area can be
+   wider than the 1px rule it sits on without pushing anything around.
+
+   `--rail` lives on :root, so all three views share one width. That is
+   deliberate — the list column means the same thing in each, and a width you
+   set while searching should still be there when you switch to the bundle. */
+.grip {
+  position: absolute; top: 0; bottom: 0;
+  left: calc(var(--rail) - 3px); width: 7px;
+  z-index: 5;
+  cursor: col-resize;
+  background: none; border: 0;
+}
+.grip:hover, .grip:focus-visible { background: var(--contour); opacity: .35; }
+.grip:focus-visible { outline: none; }
+/* While dragging, the whole page keeps the resize cursor and stops selecting
+   text under the pointer — otherwise a drag across the list highlights it. */
+body.is-resizing { cursor: col-resize; user-select: none; }
+body.is-resizing .grip { background: var(--contour); opacity: .5; }
+
+/* ── Finder ───────────────────────────────────────────────────────── */
+
+.finder {
+  padding: 16px 16px 12px;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.field { display: block; margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+
+.field-label {
+  display: block; margin-bottom: 5px;
+  font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink-3);
+}
+.field-label em { font-style: normal; color: var(--contour); text-transform: lowercase; letter-spacing: 0; }
+
+.field-help { display: block; margin-top: 5px; font-size: 12px; color: var(--ink-3); }
+
+input[type="search"], input[type="text"], input:not([type]), select, textarea {
+  width: 100%; padding: 8px 10px;
+  border: 1px solid var(--rule); border-radius: 2px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono); font-size: 13px;
+}
+textarea { font-family: var(--sans); font-size: 14px; resize: vertical; }
+input::placeholder, textarea::placeholder { color: var(--ink-3); }
+
+.finder-meta {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+}
+.finder-help { margin: 4px 0 0; font-size: 12px; color: var(--ink-3); }
+
+.link-btn {
+  border: 0; background: none; padding: 0;
+  color: var(--contour); cursor: pointer;
+  font-family: var(--mono); font-size: 11px;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 7px;
+  border: 1px solid var(--contour); border-radius: 2px;
+  background: var(--paper);
+  color: var(--contour);
+  font-family: var(--mono); font-size: 11px;
+  cursor: pointer;
+}
+
+/* ── Selecting variables to download ──────────────────────────────────
+   The count line under the bundle's heading. */
+
+.picked {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center; gap: 6px 10px;
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid var(--rule);
+}
+.picked-count {
+  margin: 0;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+}
+.picked-count strong { color: var(--ink); }
+.picked-warn { color: var(--ochre); }
+/* The count line doubling as a status line — see say() in atlas/basket.js. */
+.picked-count.is-saying { color: var(--ochre); }
+.picked-actions { display: flex; gap: 10px; grid-row: 1; grid-column: 2; justify-self: end; }
+.picked .btn { grid-column: 1 / -1; width: 100%; }
+/* The affirmative twin of .warn — for telling someone the thing they were
+   about to look for is already handled. */
+.note-box {
+  display: flex; gap: 10px;
+  margin: 0 0 16px; padding: 10px 12px;
+  border-left: 2px solid var(--moss);
+  background: color-mix(in srgb, var(--moss) 8%, transparent);
+  font-size: 13px;
+}
+.note-box > span { color: var(--moss); font-weight: 700; }
+
+/* ── Result list ──────────────────────────────────────────────────── */
+
+.results { list-style: none; margin: 0; padding: 0; }
+
+.row {
+  width: 100%; text-align: left;
+  display: block; padding: 9px 16px;
+  border: 0; border-bottom: 1px solid var(--rule);
+  background: none; cursor: pointer; font: inherit;
+}
+.row:hover { background: var(--paper-3); }
+.row.is-current { background: var(--paper); box-shadow: inset 3px 0 0 var(--contour); }
+
+/* An add control beside the row, sharing its bottom rule so the two read as
+   one line rather than as a control floating over a list. The hover and the
+   open-row marker belong to the whole line for the same reason: anything
+   drawn on the button alone starts to the right of the control and leaves it
+   stranded outside. */
+.pickable {
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--rule);
+}
+.pickable .row { border-bottom: 0; min-width: 0; }
+.pickable:hover { background: var(--paper-3); }
+.pickable.is-current {
+  background: var(--paper);
+  box-shadow: inset 3px 0 0 var(--contour);
+}
+.pickable.is-current .row { background: none; }
+
+.row-top { display: flex; align-items: baseline; gap: 8px; }
+.row-name {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  letter-spacing: -.02em; color: var(--ink);
+}
+.row-wave {
+  margin-left: auto;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--ink-3);
+}
+.row-label {
+  display: block; margin-top: 2px;
+  font-size: 13px; color: var(--ink-2);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.row-file { font-family: var(--mono); font-size: 10px; color: var(--ink-3); }
+
+/* The ＋, and the ✓ it becomes. Quiet until the row is hovered or it is
+   focused: 300 result rows each shouting an affordance is noise, but the
+   gesture still has to be discoverable and reachable without a mouse. */
+.add {
+  flex: 0 0 auto; align-self: center;
+  margin-left: 10px; width: 22px; height: 22px;
+  display: grid; place-items: center;
+  padding: 0; border: 1px solid transparent; border-radius: 2px;
+  background: none; color: var(--ink-3);
+  font-family: var(--mono); font-size: 13px; line-height: 1;
+  cursor: pointer;
+  opacity: .45; transition: opacity .12s, color .12s, border-color .12s;
+}
+.pickable:hover .add, .add:focus-visible { opacity: 1; }
+.add:hover { border-color: var(--contour); color: var(--contour); }
+/* In the bundle, and removable. The ✓ becomes ✕ under the pointer because
+   "already in" and "click to remove" are different statements, and a control
+   that only ever says the first reads as a dead end. */
+.add.is-in { opacity: 1; color: var(--moss); border-color: transparent; }
+.add .add-no { display: none; }
+.add.is-in:hover, .add.is-in:focus-visible { color: var(--contour); }
+.add.is-in:hover .add-yes, .add.is-in:focus-visible .add-yes { display: none; }
+.add.is-in:hover .add-no, .add.is-in:focus-visible .add-no { display: inline; }
+
+/* Not a button: the identifier is in every download whether you ask or not,
+   so this states a fact rather than offering an action. */
+.add.is-always { opacity: 1; color: var(--ink-3); cursor: default; }
+
+/* ── Detail ───────────────────────────────────────────────────────── */
+
+.empty { max-width: 46ch; padding-top: 32px; color: var(--ink-2); }
+.empty h2 {
+  margin: 0 0 10px;
+  font-family: var(--mono); font-size: 15px; font-weight: 700;
+  letter-spacing: -.02em; color: var(--ink);
+}
+.empty p { margin: 0 0 12px; font-size: 14px; }
+.empty-hint { font-size: 13px; color: var(--ink-3); }
+
+.detail-head { border-bottom: 2px solid var(--ink); padding-bottom: 12px; margin-bottom: 18px; }
+
+.detail-eyebrow {
+  font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--ink-3);
+}
+
+.detail-name {
+  margin: 4px 0 6px;
+  font-family: var(--mono); font-size: 25px; font-weight: 700;
+  letter-spacing: -.045em; line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.detail-label { margin: 0; font-size: 16px; color: var(--ink-2); max-width: 62ch; }
+
+.facts {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px; margin: 0 0 20px;
+  background: var(--rule); border: 1px solid var(--rule);
+}
+.fact { background: var(--paper); padding: 9px 11px; }
+.fact dt {
+  font-family: var(--mono); font-size: 10px;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3);
+}
+.fact dd { margin: 3px 0 0; font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+
+.section-title {
+  margin: 24px 0 10px;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .12em; color: var(--ink-3);
+  border-bottom: 1px solid var(--rule); padding-bottom: 5px;
+}
+
+.codes { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+.codes th {
+  text-align: left; padding: 5px 10px 5px 0;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ink-3); font-weight: 400;
+  border-bottom: 1px solid var(--rule);
+}
+.codes td { padding: 5px 10px 5px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.codes .val { width: 4.5em; color: var(--ink-2); }
+/* Negative codes are missing-value sentinels across this corpus - marking
+   them is the single most useful thing this table can do. */
+.codes tr.is-missing .val { color: var(--ochre); font-weight: 700; }
+.codes tr.is-missing td { color: var(--ink-3); }
+
+pre.code {
+  margin: 0; padding: 14px 16px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule); border-left: 3px solid var(--contour);
+  border-radius: 2px;
+  overflow-x: auto;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.6;
+  tab-size: 2;
+}
+
+.note { font-size: 14px; color: var(--ink-2); max-width: 68ch; white-space: pre-wrap; }
+
+
+.warn {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 12px; margin: 0 0 18px;
+  border: 1px solid var(--contour); border-left-width: 3px;
+  background: color-mix(in srgb, var(--contour) 7%, transparent);
+  font-size: 13px; color: var(--ink-2);
+}
+.warn strong { color: var(--ink); }
+
+.linklist { list-style: none; margin: 0; padding: 0; }
+.linklist li { border-bottom: 1px solid var(--rule); }
+.linklist button {
+  width: 100%; text-align: left; padding: 8px 0;
+  border: 0; background: none; cursor: pointer; font: inherit;
+  display: flex; align-items: baseline; gap: 10px;
+}
+.linklist button:hover .ll-name { color: var(--contour); }
+.ll-name { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+.ll-meta { font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-left: auto; }
+.ll-desc { font-size: 12px; color: var(--ink-2); }
+
+.btn {
+  display: inline-block; padding: 8px 15px;
+  border: 1px solid var(--rule); border-radius: 2px;
+  background: var(--paper-2); color: var(--ink);
+  font-family: var(--mono); font-size: 12px;
+  text-transform: uppercase; letter-spacing: .07em;
+  text-decoration: none; cursor: pointer;
+}
+.btn:hover { border-color: var(--ink-2); }
+.btn-primary { background: var(--contour); border-color: var(--contour); color: #fff; }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-primary[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.btn-quiet { background: none; color: var(--ink-3); }
+
+.detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 22px; }
+
+/* ── The bundle ─────────────────────────────────────────────────────
+
+   The view's own list pane is a drop target while you are in it; the TAB is a
+   drop target from anywhere else, which is the only way a drag from the
+   metadata list can reach a view you are not currently on. Both advertise
+   themselves only while something is in flight, so neither sits there as
+   decoration.
+   ------------------------------------------------------------------- */
+
+body.is-dragging-var .view-tab[data-view="basket"] {
+  border-color: var(--contour); color: var(--contour);
+}
+.view-tab.is-dropping, .pane.is-dropping {
+  background: color-mix(in srgb, var(--contour) 10%, transparent);
+  box-shadow: inset 0 0 0 2px var(--contour);
+}
+
+/* The remove control on a collected row. Mirrors the ＋ that put it there:
+   same size, same column, so adding and removing land in the same place. */
+.basket-x {
+  flex: 0 0 auto; align-self: center;
+  margin-left: 10px; width: 22px; height: 22px;
+}
+
+/* ── The output columns ───────────────────────────────────────────────
+   What the CSV will actually contain. A collision between two deposits that
+   both call something `sex` is the normal case, not the exception, and it is
+   invisible until the two are listed side by side — which is what this is
+   for. */
+
+.cols { list-style: none; margin: 0 0 16px; padding: 0; }
+
+/* Badge, then everything else stacked. It used to be three tracks with the
+   name pinned to 18ch, which is narrower than plenty of real ids -
+   parental_employment_status_father_0y is thirty-six characters - so a long
+   one ran straight over the text beside it. Nothing here has a fixed width
+   now, so no name can collide with anything at any length. */
+.col-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.col-body { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.col-row.is-bad { background: color-mix(in srgb, var(--ochre) 9%, transparent); }
+
+.col-kind {
+  min-width: 18px; height: 18px; padding: 0 4px;
+  display: grid; place-items: center;
+  border-radius: 2px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+}
+.col-kind-raw { background: none; color: var(--ink-3); border: 1px solid var(--rule); }
+.col-kind-id { background: var(--ink-3); color: var(--paper-2); }
+
+/* The identifier's row: present, permanent, and plainly not yours to change. */
+.col-row.is-fixed { opacity: .75; }
+
+.col-name {
+  font-family: var(--mono); font-size: 12.5px; font-weight: 700;
+  letter-spacing: -.02em; color: var(--ink);
+  /* A deposited name can be anything; wrap rather than overflow. */
+  overflow-wrap: anywhere;
+}
+.col-row .col-input {
+  align-self: flex-start;
+  width: 24ch; max-width: 100%; padding: 3px 6px;
+  border: 1px solid var(--rule); border-radius: 2px;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--mono); font-size: 12.5px;
+}
+.col-input[aria-invalid="true"] { border-color: var(--ochre); }
+
+.col-note {
+  font-size: 12px; color: var(--ink-3);
+  overflow-wrap: anywhere;
+}
+.col-problem {
+  font-family: var(--mono); font-size: 11px; color: var(--ochre);
+}
+
+.topic-chip {
+  display: inline-block; padding: 0 6px;
+  border: 1px solid var(--rule); border-radius: 2px;
+  font-family: var(--sans); font-size: 11px; line-height: 1.6; color: var(--ink-2);
+  white-space: nowrap;
+}
+
+/* ── Dataset picker ───────────────────────────────────────────────── */
+
+.picker {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--ink-3);
+}
+.picker select {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  text-transform: none; letter-spacing: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--rule); border-radius: 2px;
+  background: var(--paper); color: var(--ink);
+  cursor: pointer;
+}
+
+/* ── Download options ─────────────────────────────────────────────── */
+
+.options { display: grid; gap: 14px; margin: 0 0 8px; }
+.option-row { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: baseline; }
+.option-name {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--ink-2);
+  min-width: 14ch;
+}
+.option-row label { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; cursor: pointer; }
+.option-row input { accent-color: var(--contour); }
+.option-help { flex-basis: 100%; margin: 0; font-size: 12px; color: var(--ink-3); }
+
+/* ── Footer ───────────────────────────────────────────────────────── */
+
+.foot {
+  padding: 10px 20px;
+  border-top: 1px solid var(--rule);
+  background: var(--paper-2);
+  font-size: 11.5px; color: var(--ink-3);
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline;
+}
+.foot-sep { opacity: .5; }
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  /* On a phone only the filter bar stays: a pinned masthead as well would
+     take a third of the screen. */
+  .masthead { position: static; gap: 10px; }
+  .filterbar { top: 0; }
+  .mark { width: 100%; }
+  .mark-sub { display: none; }
+
+  /* The chart keeps its columns and scrolls sideways, names pinned. */
+  :root { --grid-label: 150px; }
+  .ov-chart { overflow-x: auto; }
+  .ov-row { min-width: calc(var(--grid-label) + 14 * 30px); }
+  .ov-label { position: sticky; left: 0; z-index: 1; background: var(--paper-2); }
+  .ov-hint { display: block; margin: 2px 0 0; }
+
+  .fb-search { flex-basis: 100%; max-width: none; }
+  .fb-end { margin-left: 0; }
+
+  /* A row becomes a card: name and sweep, then the label, then topics. */
+  .vtable { padding: 0 12px 8px; }
+  .vhead { display: none; }
+  .vrow-btn {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "name wave chev" "label label label" "topics topics topics";
+    gap: 2px 10px;
+  }
+  .v-name { grid-area: name; }
+  .v-label { grid-area: label; }
+  .v-wave { grid-area: wave; }
+  .v-topics { grid-area: topics; margin-top: 3px; }
+  .v-chev { grid-area: chev; }
+  .vrow-more { padding-left: 16px; }
+
+  .view.is-current { grid-template-columns: 1fr; }
+  .grip { display: none; }
+  .pane-list { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .detail-name { font-size: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

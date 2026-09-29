@@ -1,0 +1,577 @@
+# Topic schema for tagging survey variables.
+#
+# Two levels: DOMAINS (broad) and the TOPICS inside them (specific). The model
+# tags each variable with one or more topics, each with a confidence from 0 to
+# 1; a variable's domains follow from its topics.
+#
+# Based on the CLOSER Discovery controlled vocabulary, the two-level topic
+# scheme CLOSER uses to index questions and variables from UK longitudinal
+# studies, itself built from MeSH and ELSST terms:
+#   https://github.com/CLOSER-Cohorts/archivist (test/fixtures/topics.yml)
+#   https://doi.org/10.1093/ije/dyz004 (CLOSER data resource profile)
+# `closer` is the CLOSER topic code. `cessda` names the nearest top-level term
+# in the CESSDA Topic Classification, for cross-reference:
+#   https://vocabularies.cessda.eu/vocabulary/TopicClassification
+#
+# Departures from CLOSER are marked `added: true` (topics these studies need
+# that CLOSER does not have) or noted in a comment. CLOSER lists "Cognitive
+# function" twice (10405 and 10809); it appears once here.
+#
+# EDITING: ids are what gets stored, so rename an id only if you mean to
+# re-tag. Labels and descriptions can change freely, but the model reads the
+# descriptions, so a changed description changes the tags: any edit to this
+# file makes `python -m enrich` treat existing tags as stale and redo them.
+
+version: 1
+name: CLOSER topics (survey-merge edition)
+
+# Extra guidance given to the model, before the topics.
+guidance: |
+  You are classifying variables from a UK longitudinal cohort study by topic,
+  for researchers searching for variables to use.
+  - Tag what the variable MEASURES, not who answered: a parent's report of the
+    child's asthma is respiratory_system, not family_members.
+  - Use every topic that genuinely applies: a main topic, plus any secondary
+    ones the variable would also be found under. "Rent amount" is housing
+    (0.9) and consumption (0.5); "Age first owned a property" is housing (0.9)
+    and assets (0.6); "Mother smoked during pregnancy" is smoking (0.9) and
+    pregnancy_history (0.9).
+  - Confidence is how sure you are the topic applies, from 0 to 1. Use high
+    values (0.8+) only when the label makes it clear; leave out anything
+    below 0.3.
+  - Derived variables, flags and weights still get a topic for what they are.
+  - If nothing fits, use `other` with a low confidence.
+
+domains:
+  - id: demographics
+    label: Demographics
+    closer: "101"
+    cessda: Demography
+    description: Basic characteristics of the cohort member and the people around them.
+    topics:
+      - id: age
+        label: Age
+        closer: "10107"
+        description: Age or date of birth, of the cohort member or anyone else.
+      - id: gender
+        label: Sex and gender
+        closer: "10102"
+        description: Sex or gender, of the cohort member or anyone else.
+      - id: ethnic_group
+        label: Ethnic group
+        closer: "10103"
+        description: Ethnicity, race, national identity.
+      - id: place_of_birth
+        label: Place of birth
+        closer: "10101"
+        description: Country or place of birth, migration background.
+      - id: languages
+        label: Languages spoken
+        closer: "10104"
+        description: Languages spoken at home or known; English as an additional language.
+      - id: religion
+        label: Religion
+        closer: "11003"
+        description: Religious affiliation, belief and practice.
+      - id: location
+        label: Location and geography
+        closer: "10106"
+        description: Country, region, local authority, urban/rural, geographic codes.
+
+  - id: housing_environment
+    label: Housing and local environment
+    closer: "102"
+    cessda: Housing and land use
+    description: The home, the neighbourhood and moving between them.
+    topics:
+      - id: housing
+        label: Housing
+        closer: "10201"
+        description: Tenure, dwelling type, rooms, housing costs, conditions, amenities, homelessness.
+      - id: neighbourhood
+        label: Neighbourhood
+        closer: "10202"
+        description: Local area, its facilities, safety and deprivation (e.g. IMD).
+      - id: travel_transport
+        label: Travel and transport
+        closer: "10203"
+        description: Commuting, car access, journeys to school or work.
+      - id: environmental_exposure
+        label: Environmental exposure
+        closer: "10204"
+        description: Pollution, noise, damp, second-hand smoke and similar exposures.
+      - id: residential_mobility
+        label: Residential mobility
+        closer: "10205"
+        description: Moving home, number of addresses, housing histories.
+
+  - id: physical_health
+    label: Physical health
+    closer: "103"
+    cessda: Health
+    description: Bodily health, conditions and measurements.
+    topics:
+      - id: general_health
+        label: General health
+        closer: "10323"
+        description: Self-rated health, longstanding illness, limiting conditions.
+      - id: cardiovascular_system
+        label: Cardiovascular system
+        closer: "10301"
+        description: Heart disease, blood pressure, circulation.
+      - id: musculoskeletal_system
+        label: Musculoskeletal system
+        closer: "10302"
+        description: Bones, joints, muscles, back pain, arthritis.
+      - id: respiratory_system
+        label: Respiratory system
+        closer: "10303"
+        description: Asthma, wheeze, bronchitis, lung function.
+      - id: nervous_system
+        label: Nervous system
+        closer: "10304"
+        description: Epilepsy, migraine, neurological conditions.
+      - id: digestive_system
+        label: Digestive system
+        closer: "10305"
+        description: Stomach, bowel and liver conditions.
+      - id: urogenital_system
+        label: Urogenital system
+        closer: "10306"
+        description: Kidney, bladder, bedwetting, urinary conditions.
+      - id: endocrine_system
+        label: Endocrine system
+        closer: "10307"
+        description: Diabetes, thyroid, hormonal conditions.
+      - id: hemic_immune_systems
+        label: Blood and immune system
+        closer: "10308"
+        description: Anaemia, blood disorders, immune conditions.
+      - id: hearing_vision_speech
+        label: Hearing, vision and speech
+        closer: "10309"
+        description: Eyesight, hearing, audiometry, speech problems.
+      - id: oral_dental_health
+        label: Oral and dental health
+        closer: "10310"
+        description: Teeth, dental visits and treatment.
+      - id: skin_conditions
+        label: Skin conditions
+        closer: "10311"
+        description: Eczema and other skin conditions.
+      - id: congenital_conditions
+        label: Congenital conditions
+        closer: "10312"
+        description: Congenital malformations and conditions present at birth.
+      - id: cancer
+        label: Cancer
+        closer: "10313"
+        description: Cancer diagnosis and treatment.
+      - id: mortality
+        label: Mortality
+        closer: "10314"
+        description: Death of the cohort member or others, causes of death.
+      - id: reproductive_health
+        label: Reproductive health
+        closer: "10315"
+        description: Fertility, contraception, infertility, reproductive conditions.
+      - id: womens_health
+        label: Women's health
+        closer: "10316"
+        description: Menstruation, menopause, gynaecological health.
+      - id: accidents_injuries
+        label: Accidents and injuries
+        closer: "10317"
+        description: Accidents, injuries, poisonings, burns.
+      - id: allergies
+        label: Allergies
+        closer: "10318"
+        description: Allergies and hay fever.
+      - id: infections
+        label: Infections
+        closer: "10319"
+        description: Infectious diseases, including Covid-19 infection.
+      - id: anthropometry
+        label: Anthropometry
+        closer: "10320"
+        description: Height, weight, BMI, waist, body measurements.
+      - id: physical_characteristics
+        label: Physical characteristics
+        closer: "10321"
+        description: Handedness, puberty, appearance and other physical traits.
+      - id: physical_functioning
+        label: Physical functioning
+        closer: "10322"
+        description: Mobility, grip strength, disability, difficulty with daily activities.
+
+  - id: mental_health
+    label: Mental health and mental processes
+    closer: "104"
+    cessda: Psychology
+    description: Mental health, wellbeing, personality and cognition.
+    topics:
+      - id: mental_disorders
+        label: Mental health conditions
+        closer: "10401"
+        description: Depression, anxiety, psychological distress (e.g. Malaise, GHQ, Kessler), self-harm, diagnosed mental illness.
+      - id: personality
+        label: Personality and temperament
+        closer: "10402"
+        description: Personality traits, temperament, locus of control, self-esteem.
+      - id: wellbeing
+        label: Wellbeing
+        closer: "10403"
+        description: Life satisfaction, happiness, loneliness, quality of life.
+      - id: emotions
+        label: Emotions and behaviour
+        closer: "10404"
+        description: Emotional and behavioural difficulties (e.g. Rutter, SDQ), feelings, anger, worry.
+      - id: cognitive_function
+        label: Cognitive function
+        closer: "10405"
+        description: Tests and measures of cognition, memory, reasoning, attention.
+
+  - id: health_care
+    label: Health care
+    closer: "105"
+    cessda: Health
+    description: Use of health services and treatment.
+    topics:
+      - id: health_services
+        label: Health services use
+        closer: "10501"
+        description: GP visits, consultations, contact with health professionals.
+      - id: hospital_admissions
+        label: Hospital admissions
+        closer: "10502"
+        description: Hospital stays, A&E, operations.
+      - id: immunisations
+        label: Immunisations
+        closer: "10503"
+        description: Vaccinations, including Covid-19 vaccination.
+      - id: medications
+        label: Medications
+        closer: "10504"
+        description: Prescribed and over-the-counter medicines.
+      - id: complementary_therapies
+        label: Complementary therapies
+        closer: "10505"
+        description: Alternative and complementary treatments.
+      - id: health_insurance
+        label: Health insurance
+        closer: "10506"
+        description: Private medical insurance.
+
+  - id: health_behaviour
+    label: Health behaviour
+    closer: "106"
+    cessda: Health
+    description: Lifestyle behaviours that affect health.
+    topics:
+      - id: diet_nutrition
+        label: Diet and nutrition
+        closer: "10601"
+        description: Food eaten, meals, nutrient intake, dieting.
+      - id: physical_activity
+        label: Physical activity
+        closer: "10602"
+        description: Exercise, sport, sedentary time, accelerometry.
+      - id: sleep
+        label: Sleep
+        closer: "10603"
+        description: Sleep duration, quality, problems.
+      - id: smoking
+        label: Smoking
+        closer: "10604"
+        description: Tobacco and e-cigarette use.
+      - id: alcohol
+        label: Alcohol consumption
+        closer: "10605"
+        description: Drinking frequency, amount, problem drinking (e.g. CAGE, AUDIT).
+      - id: substance_use
+        label: Drug and substance use
+        closer: "10606"
+        description: Cannabis and other drugs, solvents.
+      - id: risk_taking
+        label: Risk taking
+        closer: "10607"
+        description: Risky behaviours not covered elsewhere, e.g. gambling.
+      - id: sexual_behaviour
+        label: Sexual behaviour
+        closer: "10609"
+        description: Sexual activity, partners, orientation and identity.
+
+  - id: family_social
+    label: Family and social networks
+    closer: "107"
+    cessda: Society and culture
+    description: The household, relationships and social life.
+    topics:
+      - id: home_life
+        label: Home life
+        closer: "10701"
+        description: Family routines and activities at home, family functioning.
+      - id: household_composition
+        label: Household composition
+        closer: "10702"
+        description: Who lives in the household, household grids, household size.
+      - id: marital_status
+        label: Partnership and marital status
+        closer: "10703"
+        description: Marriage, cohabitation, partnership histories, separation and divorce.
+      - id: family_members
+        label: Family members and relations
+        closer: "10704"
+        description: Parents, siblings, children, relationships with them, contact with non-resident family.
+      - id: friends
+        label: Friends
+        closer: "10705"
+        description: Friendships and peers.
+      - id: childcare
+        label: Childcare
+        closer: "10706"
+        description: Childcare arrangements and costs.
+      - id: child_welfare
+        label: Child welfare
+        closer: "10707"
+        description: Children in care, child protection, adversity in childhood.
+      - id: social_support
+        label: Social support
+        closer: "10708"
+        description: Help and support given or received, caring for others.
+      - id: leisure
+        label: Leisure activities
+        closer: "10709"
+        description: Hobbies, pastimes, reading, clubs, volunteering, media use.
+      - id: social_capital
+        label: Social capital
+        closer: "10710"
+        description: Civic participation, trust, community involvement.
+      - id: technology
+        label: Technology
+        closer: "10711"
+        description: Internet, computers, phones and their use.
+
+  - id: education
+    label: Education
+    closer: "108"
+    cessda: Education
+    description: Schooling, qualifications and skills.
+    topics:
+      - id: qualifications
+        label: Qualifications
+        closer: "10801"
+        description: Exams, qualifications held, highest qualification, grades.
+      - id: further_higher_education
+        label: Further and higher education
+        closer: "10803"
+        description: College, sixth form, university, courses after 16.
+      - id: training
+        label: Training
+        closer: "10804"
+        description: Work-related and vocational training, apprenticeships.
+      - id: basic_skills
+        label: Basic skills
+        closer: "10805"
+        description: Literacy and numeracy in adulthood.
+      - id: adult_education
+        label: Adult education
+        closer: "10806"
+        description: Education taken up in adulthood.
+      - id: learning_difficulties
+        label: Learning difficulties and SEN
+        closer: "10807"
+        description: Special educational needs, dyslexia, learning difficulties.
+      - id: pre_school
+        label: Pre-school
+        closer: "10808"
+        description: Nursery, playgroup and early education.
+      - id: cognitive_skills
+        label: Cognitive skills and attainment
+        closer: "10810"
+        description: School attainment and ability test scores (reading, maths, vocabulary).
+      - id: non_cognitive_skills
+        label: Non-cognitive skills
+        closer: "10811"
+        description: Motivation, self-control, perseverance, social skills.
+      - id: school_engagement
+        label: School engagement
+        closer: "10812"
+        description: Attitudes to school, attendance, truancy, exclusion, homework.
+      - id: education_aspirations
+        label: Educational aspirations
+        closer: "10813"
+        description: Plans and hopes for education, including parents' aspirations.
+      - id: lifelong_learning
+        label: Lifelong learning
+        closer: "10814"
+        description: Continuing learning across adult life.
+      - id: primary_schooling
+        label: Primary schooling
+        closer: "10815"
+        description: Primary school, its type and characteristics.
+      - id: secondary_schooling
+        label: Secondary schooling
+        closer: "10816"
+        description: Secondary school, its type and characteristics, school leaving.
+
+  - id: employment_income
+    label: Employment and income
+    closer: "109"
+    cessda: Labour and employment
+    description: Work, social position and money.
+    topics:
+      - id: employment
+        label: Occupation and employment
+        closer: "10901"
+        description: Economic activity, jobs, hours, occupation codes, unemployment, activity histories.
+      - id: social_class
+        label: Social classification
+        closer: "10902"
+        description: Social class, NS-SEC, socio-economic group, occupational status.
+      - id: income
+        label: Income
+        closer: "10903"
+        description: Earnings, household income, unfolding income brackets.
+      - id: finances
+        label: Finances
+        closer: "10904"
+        description: Financial situation, debt, managing financially, savings behaviour, financial literacy.
+      - id: assets
+        label: Assets
+        closer: "10905"
+        description: Savings, investments, property wealth.
+      - id: consumption
+        label: Consumption and expenditure
+        closer: "10906"
+        description: Spending and what is bought.
+      - id: pensions
+        label: Pensions
+        closer: "10907"
+        description: Pension schemes and contributions.
+      - id: benefits
+        label: Benefits and welfare
+        closer: "10908"
+        description: State benefits and tax credits received.
+
+  - id: attitudes
+    label: Expectations, attitudes and beliefs
+    closer: "110"
+    cessda: Society and culture
+    description: Views, values and expectations.
+    topics:
+      - id: social_attitudes
+        label: Social attitudes
+        closer: "11001"
+        description: Attitudes to society, gender roles, work, the future.
+      - id: politics
+        label: Politics
+        closer: "11002"
+        description: Political interest, voting, party support.
+
+  - id: child_development
+    label: Child development
+    closer: "111"
+    cessda: Health
+    description: Early life and development.
+    topics:
+      - id: infant_feeding
+        label: Infant feeding
+        closer: "11101"
+        description: Breastfeeding, weaning, infant diet.
+      - id: language_vocabulary
+        label: Language and vocabulary
+        closer: "11102"
+        description: Early language development and vocabulary.
+      - id: parenting
+        label: Parenting
+        closer: "11103"
+        description: Parenting style, discipline, parental involvement and interest in the child.
+      - id: developmental_milestones
+        label: Developmental milestones
+        closer: "11104"
+        description: Walking, talking, toilet training and other milestones.
+
+  - id: life_events
+    label: Life events
+    closer: "112"
+    cessda: Society and culture
+    description: Significant events across the life course.
+    topics:
+      - id: retirement
+        label: Retirement
+        closer: "11201"
+        description: Retirement plans and timing.
+      - id: crime_justice
+        label: Crime and police contact
+        added: true
+        description: Offending, arrests, police contact, victimisation by crime, antisocial behaviour.
+      - id: bullying
+        label: Bullying
+        added: true
+        description: Being bullied or bullying others.
+      - id: covid19
+        label: Covid-19 pandemic
+        added: true
+        description: Experiences of the pandemic and lockdowns, economic shocks since Covid-19.
+      - id: adverse_events
+        label: Adverse life events
+        added: true
+        description: Bereavement, family breakdown, serious illness of others and other stressful events.
+
+  - id: omics
+    label: Omics
+    closer: "113"
+    cessda: Science and technology
+    description: Biological samples and molecular data.
+    topics:
+      - id: genetics
+        label: Genetics and genomics
+        closer: "11301"
+        description: Genetic data, DNA samples. (CLOSER 11302-11306 folded in.)
+      - id: biomarkers
+        label: Biomarkers
+        added: true
+        description: Blood, saliva and other samples and what was measured from them.
+
+  - id: pregnancy
+    label: Pregnancy
+    closer: "114"
+    cessda: Health
+    description: Pregnancy and birth, of the cohort member's mother or of the cohort member.
+    topics:
+      - id: pregnancy_history
+        label: Pregnancy
+        added: true
+        description: Pregnancies, antenatal care, smoking or drinking in pregnancy, miscarriage.
+      - id: childbirth
+        label: Childbirth
+        closer: "11401"
+        description: Delivery, birth weight, gestation, complications at birth.
+      - id: infant_mortality
+        label: Infant mortality
+        closer: "11402"
+        description: Stillbirth, neonatal and infant death.
+
+  - id: administration
+    label: Administration
+    closer: "115"
+    cessda: Other
+    description: How the data were collected, rather than about the person.
+    topics:
+      - id: identifiers
+        label: Identifiers and linkage
+        added: true
+        description: Serial numbers, person and household identifiers, keys for linking records.
+      - id: survey_weights
+        label: Survey weights and design
+        added: true
+        description: Weights, strata, clusters, sample design variables.
+      - id: fieldwork
+        label: Interview and fieldwork
+        added: true
+        description: Interview dates, mode, interviewer checks, response and participation status, consent.
+      - id: other
+        label: Other
+        added: true
+        description: Nothing else fits.

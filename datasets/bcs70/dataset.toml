@@ -1,0 +1,33 @@
+# The 1970 British Cohort Study. See docs/metadata-spec.md for every field.
+
+[dataset]
+key         = "bcs70"
+name        = "BCS70"
+full_name   = "1970 British Cohort Study"
+description = """
+Follows around 17,000 people born in England, Scotland and Wales in a single \
+week of 1970, from birth into their fifties."""
+identifier  = "bcsid"
+ukds_url    = "https://beta.ukdataservice.ac.uk/datacatalogue/series/series?id=200001"
+
+# Each sweep is its own collection with its own variable names; nothing lines
+# up across sweeps by name.
+[wave]
+term   = "sweep"
+plural = "sweeps"
+list = [
+  { key = "0y",    label = "Birth, 1970" },
+  { key = "42m",   label = "42 months, 1973–74" },
+  { key = "5y",    label = "Age 5, 1975" },
+  { key = "10y",   label = "Age 10, 1980" },
+  { key = "16y",   label = "Age 16, 1986" },
+  { key = "21y",   label = "Age 21, 1992 (sample)" },
+  { key = "26y",   label = "Age 26, 1996" },
+  { key = "29y",   label = "Age 29, 1999–2000" },
+  { key = "34y",   label = "Age 34, 2004–05" },
+  { key = "38y",   label = "Age 38, 2008–09" },
+  { key = "42y",   label = "Age 42, 2012" },
+  { key = "46y",   label = "Age 46, 2016–18" },
+  { key = "51y",   label = "Age 51, 2021–24" },
+  { key = "xwave", label = "Cross-sweep files" },
+]

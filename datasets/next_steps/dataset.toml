@@ -1,0 +1,35 @@
+# Next Steps (formerly LSYPE). See docs/metadata-spec.md for every field.
+#
+# Dictionaries converted from the UKDS deposit (SN 5545, 18th edition,
+# February 2025), then sorted into wave folders from files.csv:
+#   python3 tools/ukda_rtf_to_csv.py mrdoc/ukda_data_dictionaries datasets/next_steps/dictionaries
+#   python3 tools/shuffle_dictionaries.py datasets/next_steps
+# Descriptions are from 5545_file_information.rtf, except ns9_2022_longitudinal_file,
+# ns9_2022_pregnancy_history and ns9_2022_person_grid, which it does not list, and
+# ns9_2022_activity_history, which it describes as the main interview file.
+
+[dataset]
+key         = "next_steps"
+name        = "Next Steps"
+full_name   = "Next Steps (Longitudinal Study of Young People in England)"
+description = """
+Follows around 16,000 people born in 1989–90 in England, from age 14 in 2004 \
+into their thirties."""
+identifier  = "NSID"
+ukds_url    = "https://beta.ukdataservice.ac.uk/datacatalogue/series/series?id=2000030"
+
+[wave]
+term   = "sweep"
+plural = "sweeps"
+list = [
+  { key = "14y",   label = "Sweep 1, 2004" },
+  { key = "15y",   label = "Sweep 2, 2005" },
+  { key = "16y",   label = "Sweep 3, 2006" },
+  { key = "17y",   label = "Sweep 4, 2007" },
+  { key = "18y",   label = "Sweep 5, 2008" },
+  { key = "19y",   label = "Sweep 6, 2009" },
+  { key = "20y",   label = "Sweep 7, 2010" },
+  { key = "25y",   label = "Sweep 8, 2015–16" },
+  { key = "32y",   label = "Sweep 9, 2022–23" },
+  { key = "xwave", label = "Cross-sweep files" },
+]
