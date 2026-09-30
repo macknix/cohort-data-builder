@@ -101,6 +101,7 @@ export function restoreOptions() {
       if ([30, 50, 70, 90].includes(saved.minConf)) state.options.minConf = saved.minConf;
       if (typeof saved.gridOpen === "boolean") state.options.gridOpen = saved.gridOpen;
       state.options.gridShade = saved.gridShade === "abs" ? "abs" : "row";
+      if (["csv", "dta", "sav"].includes(saved.outputFormat)) state.options.outputFormat = saved.outputFormat;
     }
   } catch { /* defaults */ }
 }
@@ -125,12 +126,28 @@ export function restore() {
 
 /* ── Problems that block the download ─────────────────────────────────── */
 
+/* What each output file type allows in a column name, beyond NAME_OK. */
+const FORMAT_RULES = {
+  csv: () => null,
+  dta: (name) => !/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)
+    ? `Stata names use only letters, digits and _: try ${name.replace(/[^A-Za-z0-9_]/g, "_")}.`
+    : name.length > 32 ? "Stata names are at most 32 characters." : null,
+  sav: (name) => name.length > 64 ? "SPSS names are at most 64 characters."
+    : name.endsWith(".") ? "SPSS names cannot end with a dot." : null,
+};
+
 export function problems() {
   const out = new Map();
   const seen = new Map([[String(state.manifest.identifier).toLowerCase(), null]]);
+  const rule = FORMAT_RULES[state.options.outputFormat] || FORMAT_RULES.csv;
   for (const b of state.bundle) {
     if (!NAME_OK.test(b.column || "")) {
       out.set(keyOf(b), "Must start with a letter and use only letters, digits, _ or .");
+      continue;
+    }
+    const formatProblem = rule(b.column);
+    if (formatProblem) {
+      out.set(keyOf(b), formatProblem);
       continue;
     }
     const lower = b.column.toLowerCase();
@@ -209,18 +226,22 @@ function renderDetail() {
   files.sort((a, b) => keys.indexOf(byFile.get(a).wave) - keys.indexOf(byFile.get(b).wave) ||
     a.localeCompare(b));
   const { languages, missingToNa } = state.options;
+  const format = state.options.outputFormat;
+  const ext = { csv: "csv", dta: "dta", sav: "sav" }[format] || "csv";
+  const dotted = format === "dta" && state.bundle.some((b) => /[^A-Za-z0-9_]/.test(b.column));
 
   el.innerHTML = `
     <div class="detail-head">
       <div class="detail-eyebrow">${esc(m.name)} · ${n} variable${n === 1 ? "" : "s"} from ${files.length} file${files.length === 1 ? "" : "s"}</div>
-      <h1 class="detail-name">output/merged.csv</h1>
+      <h1 class="detail-name">output/merged.${ext}</h1>
       <p class="detail-label">One row per person, joined on <code>${esc(m.identifier)}</code>.
-        A file with several rows per person is written to its own CSV instead.</p>
+        A file with several rows per person is written to its own file instead.</p>
     </div>
 
     ${bad.size ? `<div class="warn"><span>⚠</span><div>
-      <strong>Two columns cannot share a name.</strong> Rename one below before
-      downloading.</div></div>` : ""}
+      <strong>${bad.size} column name${bad.size === 1 ? " needs" : "s need"} changing</strong>
+      before downloading; each says why below.${dotted
+        ? ` <button class="link-btn" id="fix-dots">Replace every . with _</button>` : ""}</div></div>` : ""}
 
     <h2 class="section-title">Columns</h2>
     <p class="note">In the order they are written. Rename any of them here.</p>
@@ -250,6 +271,16 @@ function renderDetail() {
         <label><input type="checkbox" data-lang="python" ${languages.includes("python") ? "checked" : ""}> Python</label>
       </div>
       <div class="option-row">
+        <span class="option-name">Output file</span>
+        <label><input type="radio" name="opt-format" value="csv" ${format === "csv" ? "checked" : ""}> CSV</label>
+        <label><input type="radio" name="opt-format" value="dta" ${format === "dta" ? "checked" : ""}> Stata (.dta)</label>
+        <label><input type="radio" name="opt-format" value="sav" ${format === "sav" ? "checked" : ""}> SPSS (.sav)</label>
+        <p class="option-help">${format === "csv"
+          ? "Plain text that opens anywhere. Labels go in <code>codebook.csv</code> alongside it."
+          : `Carries each column's label and value labels from the data dictionary. Needs
+             <code>haven</code> in R${format === "sav" ? " and <code>pyreadstat</code> in Python" : ""}.`}</p>
+      </div>
+      <div class="option-row">
         <span class="option-name">Missing codes</span>
         <label><input type="checkbox" id="opt-na" ${missingToNa ? "checked" : ""}> Convert to NA</label>
         <p class="option-help">Replaces each variable's declared missing-value codes, and any negative code with a value label, with NA. Off keeps the codes as deposited. Either way it is one setting at the top of the script, and <code>codebook.csv</code> lists the codes.</p>
@@ -273,6 +304,20 @@ function renderDetail() {
   $("#opt-na").addEventListener("change", (e) => {
     state.options.missingToNa = e.target.checked;
     saveOptions();
+  });
+  $$("#basket-detail [name=opt-format]").forEach((r) => r.addEventListener("change", () => {
+    state.options.outputFormat = r.value;
+    saveOptions(); renderDetail();
+  }));
+  $("#fix-dots")?.addEventListener("click", () => {
+    const taken = new Set([String(m.identifier).toLowerCase()]);
+    for (const b of state.bundle) {
+      let name = b.column.replace(/[^A-Za-z0-9_]/g, "_");
+      for (let i = 2; taken.has(name.toLowerCase()); i++) name = `${b.column.replace(/[^A-Za-z0-9_]/g, "_")}_${i}`;
+      b.column = name;
+      taken.add(name.toLowerCase());
+    }
+    save(); render();
   });
 
   $$("#basket-detail [data-rename]").forEach((input) => {

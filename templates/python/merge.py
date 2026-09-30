@@ -15,6 +15,7 @@ sys.path.insert(0, str(HERE))
 
 from load_data import (  # noqa: E402
     apply_missing_codes, find_data_file, index_data_dir, normalise_identifier, read_columns,
+    write_output,
 )
 
 # ── Settings ────────────────────────────────────────────────────────────────
@@ -24,6 +25,10 @@ DATA_DIR = HERE.parent / "data"
 
 # Where the results are written.
 OUTPUT_DIR = HERE.parent / "output"
+
+# The file type written: "csv", "dta" (Stata) or "sav" (SPSS). Stata and SPSS
+# files carry the variable and value labels below; SPSS needs pyreadstat.
+OUTPUT_FORMAT = "{{output_format}}"
 
 # True replaces each variable's missing-value codes below with NA.
 # False keeps the codes exactly as deposited.
@@ -45,6 +50,16 @@ SELECTION = {
 # dictionary: the declared missing values plus any labelled negative code.
 MISSING_CODES = {
 {{missing_codes}}
+}
+
+# Labels written into Stata and SPSS files, from the data dictionary: a label
+# per output column, and the value labels of each column that has them.
+LABELS = {
+{{labels}}
+}
+
+VALUE_LABELS = {
+{{value_labels}}
 }
 
 # ── Merge ───────────────────────────────────────────────────────────────────
@@ -86,16 +101,16 @@ def main() -> None:
         # history) cannot be joined one-to-one. It is written out on its own.
         data = data.drop_duplicates()
         if data[IDENTIFIER].duplicated().any():
-            out = Path(OUTPUT_DIR) / f"{file}_long.csv"
-            data.to_csv(out, index=False)
+            out = write_output(data, Path(OUTPUT_DIR) / f"{file}_long", OUTPUT_FORMAT,
+                               LABELS, VALUE_LABELS)
             print(f"{file} has several rows per {IDENTIFIER}; written separately to {out}")
             continue
         wide.append(data)
 
     if wide:
         merged = reduce(lambda a, b: a.merge(b, on=IDENTIFIER, how="outer"), wide)
-        out = Path(OUTPUT_DIR) / "merged.csv"
-        merged.to_csv(out, index=False)
+        out = write_output(merged, Path(OUTPUT_DIR) / "merged", OUTPUT_FORMAT,
+                           LABELS, VALUE_LABELS)
         print(f"Wrote {len(merged)} rows and {merged.shape[1]} columns to {out}")
 
 

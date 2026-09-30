@@ -12,6 +12,10 @@ DATA_DIR <- "data"
 # Where the results are written.
 OUTPUT_DIR <- "output"
 
+# The file type written: "csv", "dta" (Stata) or "sav" (SPSS). Stata and SPSS
+# files carry the variable and value labels below; they need the haven package.
+OUTPUT_FORMAT <- "{{output_format}}"
+
 # TRUE replaces each variable's missing-value codes below with NA.
 # FALSE keeps the codes exactly as deposited.
 MISSING_TO_NA <- {{missing_to_na}}
@@ -32,6 +36,16 @@ SELECTION <- list(
 # dictionary: the declared missing values plus any labelled negative code.
 MISSING_CODES <- list(
 {{missing_codes}}
+)
+
+# Labels written into Stata and SPSS files, from the data dictionary: a label
+# per output column, and the value labels of each column that has them.
+LABELS <- list(
+{{labels}}
+)
+
+VALUE_LABELS <- list(
+{{value_labels}}
 )
 
 # ── Merge ────────────────────────────────────────────────────────────────
@@ -79,8 +93,8 @@ for (file in names(SELECTION)) {
   # cannot be joined one-to-one. It is written out on its own instead.
   data <- unique(data)
   if (anyDuplicated(data[[IDENTIFIER]]) > 0) {
-    out <- file.path(OUTPUT_DIR, paste0(file, "_long.csv"))
-    utils::write.csv(data, out, row.names = FALSE, na = "")
+    out <- write_output(data, file.path(OUTPUT_DIR, paste0(file, "_long")),
+                        OUTPUT_FORMAT, LABELS, VALUE_LABELS)
     message(file, " has several rows per ", IDENTIFIER, "; written separately to ", out)
     next
   }
@@ -89,7 +103,6 @@ for (file in names(SELECTION)) {
 
 if (length(wide) > 0) {
   merged <- Reduce(function(a, b) merge(a, b, by = IDENTIFIER, all = TRUE), wide)
-  out <- file.path(OUTPUT_DIR, "merged.csv")
-  utils::write.csv(merged, out, row.names = FALSE, na = "")
+  out <- write_output(merged, file.path(OUTPUT_DIR, "merged"), OUTPUT_FORMAT, LABELS, VALUE_LABELS)
   message("Wrote ", nrow(merged), " rows and ", ncol(merged), " columns to ", out)
 }

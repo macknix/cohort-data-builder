@@ -96,6 +96,23 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
   outline-offset: 2px;
 }
 
+/* ── Beta ─────────────────────────────────────────────────────────── */
+
+.beta-bar {
+  margin: 0; padding: 7px 20px;
+  background: color-mix(in srgb, var(--ochre) 14%, var(--paper));
+  border-bottom: 1px solid color-mix(in srgb, var(--ochre) 35%, var(--rule));
+  font-size: 13px; color: var(--ink);
+}
+.beta-bar strong { color: var(--ochre); }
+.beta-bar a { color: inherit; }
+.beta-pill {
+  align-self: center;
+  padding: 1px 6px; border: 1px solid var(--ochre); border-radius: 9px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--ochre);
+}
+
 /* ── Masthead ─────────────────────────────────────────────────────── */
 
 .masthead {
@@ -876,6 +893,7 @@ body.is-dragging-var .view-tab[data-view="basket"] {
   .filterbar { top: 0; }
   .mark { width: 100%; }
   .mark-sub { display: none; }
+  .beta-bar { padding: 7px 12px; font-size: 12px; }
 
   /* The chart keeps its columns and scrolls sideways, names pinned. */
   :root { --grid-label: 150px; }

@@ -37,7 +37,7 @@ export const state = {
   options: { languages: ["r", "python"], missingToNa: true, minConf: 50,
              gridOpen: typeof matchMedia === "function" &&
                matchMedia("(min-width: 900px) and (min-height: 700px)").matches,
-             gridShade: "row" },
+             gridShade: "row", outputFormat: "csv" },
   templates: null,   // data/templates.json, fetched at first download
   view: "search",
 };

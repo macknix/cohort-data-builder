@@ -25,10 +25,10 @@ script instead of copying it.
 
 ## What you get
 
-- `output/merged.csv`: one row per person, joined on `{{identifier}}`, one
+- `output/merged.{{ext}}`: one row per person, joined on `{{identifier}}`, one
   column per selected variable. People missing from a file get empty cells
-  for that file's variables.
-- `output/<file>_long.csv`: for any file with more than one row per person
+  for that file's variables.{{format_note}}
+- `output/<file>_long.{{ext}}`: for any file with more than one row per person
   (household grids, activity and relationship histories). These cannot be
   joined one-to-one, so they are written on their own, with `{{identifier}}`
   to link them.

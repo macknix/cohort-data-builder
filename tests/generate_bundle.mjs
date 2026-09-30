@@ -1,6 +1,6 @@
 /* Generates a download exactly as the site does, without a browser.
 
-     node tests/generate_bundle.mjs <dataset> <out_dir> <true|false> <file:variable[:column]>...
+     node tests/generate_bundle.mjs <dataset> <out_dir> <true|false> <csv|dta|sav> <file:variable[:column]>...
 
    Reads the built site/data/, so run build.py first. Used by
    tests/test_generated_scripts.py. */
@@ -10,7 +10,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "site");
-const [key, outDir, na, ...picks] = process.argv.slice(2);
+const [key, outDir, na, outputFormat, ...picks] = process.argv.slice(2);
 const read = async (p) => JSON.parse(await readFile(join(root, "data", p), "utf-8"));
 
 const { state } = await import(join(root, "js", "state.js"));
@@ -29,7 +29,7 @@ for (const pick of picks) {
 
 const templates = await read("templates.json");
 const { files } = await build(bundle, state.manifest, templates,
-  { languages: ["r", "python"], missingToNa: na === "true" });
+  { languages: ["r", "python"], missingToNa: na === "true", outputFormat });
 
 for (const [path, text] of files) {
   const target = join(outDir, path.split("/").slice(1).join("/"));

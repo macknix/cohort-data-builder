@@ -62,6 +62,51 @@ function pyCodes(bundle, na) {
   }).join("\n");
 }
 
+/* ── Labels, for Stata and SPSS output ─────────────────────────────── */
+
+export const FORMATS = {
+  csv: { ext: "csv", name: "CSV" },
+  dta: { ext: "dta", name: "Stata" },
+  sav: { ext: "sav", name: "SPSS" },
+};
+
+/* A column's value labels as [code, label] pairs, or null. Only whole-number
+   codes: Stata cannot label anything else, and a set with any fraction in it
+   is not a coding scheme. One label per code, the first the dictionary gives. */
+function codeLabels(entry) {
+  const out = new Map();
+  for (const v of entry?.values || []) {
+    const x = Number(v.value);
+    if (!Number.isFinite(x) || !Number.isInteger(x)) return null;
+    if (!out.has(x)) out.set(x, String(v.label ?? ""));
+  }
+  return out.size ? [...out] : null;
+}
+
+function rLabels(bundle, entries, identifier) {
+  return [`  ${quote(identifier)} = "Identifier: every file is merged on this"`,
+    ...bundle.map((b) => `  ${quote(b.column)} = ${quote(entries.get(b)?.label || b.label || b.name)}`)]
+    .join(",\n");
+}
+
+function pyLabels(bundle, entries, identifier) {
+  return [`    ${quote(identifier)}: "Identifier: every file is merged on this",`,
+    ...bundle.map((b) => `    ${quote(b.column)}: ${quote(entries.get(b)?.label || b.label || b.name)},`)]
+    .join("\n");
+}
+
+function rValueLabels(bundle, entries) {
+  return bundle.map((b) => [b, codeLabels(entries.get(b))]).filter(([, c]) => c)
+    .map(([b, c]) => `  ${quote(b.column)} = c(${c.map(([x, l]) => `${quote(l)} = ${x}`).join(", ")})`)
+    .join(",\n");
+}
+
+function pyValueLabels(bundle, entries) {
+  return bundle.map((b) => [b, codeLabels(entries.get(b))]).filter(([, c]) => c)
+    .map(([b, c]) => `    ${quote(b.column)}: {${c.map(([x, l]) => `${x}: ${quote(l)}`).join(", ")}},`)
+    .join("\n");
+}
+
 /* ── The codebook ────────────────────────────────────────────────────── */
 
 const csvCell = (s) => {
@@ -124,6 +169,7 @@ export async function build(bundle, manifest, templates, options) {
   const today = new Date().toISOString().slice(0, 10);
   const project = `${manifest.key}-merge-${today}`;
   const { languages, missingToNa } = options;
+  const format = FORMATS[options.outputFormat] ? options.outputFormat : "csv";
 
   // Each file's dictionary, for the missing codes and the codebook.
   const groups = byFile(bundle);
@@ -154,6 +200,12 @@ export async function build(bundle, manifest, templates, options) {
   add("README.md", fill(templates["README.md"], {
     ...common,
     count: `${bundle.length} variable${bundle.length === 1 ? "" : "s"}`,
+    ext: FORMATS[format].ext,
+    format_note: format === "csv"
+      ? " CSV has no room for labels: `codebook.csv` has them."
+      : ` A ${FORMATS[format].name} file, with each column's label and value labels from the ` +
+        "data dictionary. To get a different file type, change `OUTPUT_FORMAT` at the top " +
+        "of the merge script (\"csv\", \"dta\" or \"sav\").",
     languages: languages.length === 2
       ? "The same merge is included in R and in Python; use whichever you prefer."
       : `The merge is written in ${languages[0] === "r" ? "R" : "Python"}.`,
@@ -179,6 +231,9 @@ export async function build(bundle, manifest, templates, options) {
     add("R/merge.R", fill(templates["r/merge.R"], {
       ...common,
       missing_to_na: missingToNa ? "TRUE" : "FALSE",
+      output_format: format,
+      labels: rLabels(bundle, entries, manifest.identifier),
+      value_labels: rValueLabels(bundle, entries),
       selection: rSelection(groups),
       missing_codes: rCodes(bundle, na),
     }));
@@ -189,6 +244,9 @@ export async function build(bundle, manifest, templates, options) {
     add("python/merge.py", fill(templates["python/merge.py"], {
       ...common,
       missing_to_na: missingToNa ? "True" : "False",
+      output_format: format,
+      labels: pyLabels(bundle, entries, manifest.identifier),
+      value_labels: pyValueLabels(bundle, entries),
       selection: pySelection(groups),
       missing_codes: pyCodes(bundle, na),
     }));
