@@ -77,6 +77,9 @@ def load(key: str) -> Dataset:
     variables = []
     for f in files:
         path = folder / "dictionaries" / f["wave"] / f"{f['file']}.csv"
+        if not path.exists():
+            raise SystemExit(f"No dictionary for {f['file']}. Build them first: "
+                             f"python3 tools/parse_dictionaries.py {key}")
         with path.open(newline="", encoding="utf-8") as fh:
             for row in csv.DictReader(fh):
                 raw = (row.get("value_labels_json") or "").strip()

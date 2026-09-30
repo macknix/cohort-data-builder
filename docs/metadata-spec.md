@@ -8,17 +8,31 @@ here reads a data file.
 datasets/
   <key>/
     dataset.toml               about the study
-    tags/                      optional: topic tags, written by `python -m enrich`
     files.csv                  one row per data file
-    dictionaries/
+    raw/
+      <study>/                 one folder per UKDS study number
+        <file>_ukda_data_dictionary.rtf   the deposit's own data dictionaries
+    tags/                      optional: topic tags, written by `python -m enrich`
+    dictionaries/              GENERATED from raw/, not committed
       <wave>/                  one folder per wave, named by its key (age)
         <file>.csv             one per data file: its variables
 ```
 
-For example `datasets/next_steps/dictionaries/25y/ns8_2015_main_interview.csv`.
+You commit `dataset.toml`, `files.csv`, `raw/` and `tags/`. The dictionaries
+are built from `raw/`:
 
-`python3 build.py --check` validates a folder against everything below, and
-CI runs the same check on every pull request.
+```
+python3 tools/parse_dictionaries.py            # every dataset
+python3 tools/parse_dictionaries.py <key>      # one
+python3 build.py                               # then the site
+```
+
+For example `raw/9347/bcs11_age51_main_ukda_data_dictionary.rtf` becomes
+`dictionaries/51y/bcs11_age51_main.csv`. Re-run it after changing anything
+under `raw/` or a wave in `files.csv`; it rebuilds the folder from scratch.
+
+`python3 build.py --check` validates a dataset against everything below, and
+CI runs the parse and the same check on every pull request.
 
 ## `dataset.toml`
 
@@ -42,17 +56,18 @@ One row per data file. UTF-8, comma-separated, with a header row.
 | `file` | yes | `wave_one_lsype_young_person_2020` | The data file's name **without extension or folder**, exactly as UKDS names it. Must be unique within the dataset: all files for a download live in one data folder, and the scripts find each one by this name whatever its format (`.tab`, `.dta`, `.sav`, `.csv`). |
 | `wave` | yes | `14y` | A `key` from `[wave] list`. The file's dictionary must be in the folder of the same name. |
 | `description` | yes (may be empty) | `Sweep 1 (Age 14) Young Person Data File` | From the deposit's file information table. |
-| `study` | no | `5545` | UKDS study number. |
+| `study` | no | `5545` | UKDS study number: the `raw/` folder the file's RTF is in. Needed only when one file is deposited under two studies, to say which copy to use. |
 
 If the same file is deposited under two waves (BCS70's
 `bcs70_age16_school_type` is in both the 16y and 42y deposits), list it once,
 under the wave it describes.
 
-## `dictionaries/<wave>/<file>.csv`
+## `dictionaries/<wave>/<file>.csv` (generated)
 
-One per row of `files.csv`, named `<file>.csv`, in the folder for that file's
-wave (`dictionaries/25y/`, `dictionaries/xwave/`, …). One row per variable, in
-file order. This is the column layout of UKDA's data dictionaries.
+Written by `tools/parse_dictionaries.py`, one per row of `files.csv`, in the
+folder for that file's wave (`dictionaries/25y/`, `dictionaries/xwave/`, …).
+One row per variable, in file order. You do not edit these; the columns are
+listed so it is clear what the site and the tagging read.
 
 | Column | Required | Example | Notes |
 |---|---|---|---|
@@ -89,43 +104,37 @@ form as a genuine range, so the build reads it conservatively:
 
 Every download's `codebook.csv` lists exactly which codes each column uses.
 
-## Getting the dictionaries
+## Getting the raw dictionaries
 
-There is no single tool that produces these for every study, so each dataset
-is prepared once, by hand, with whatever the deposit provides.
+Copy the deposit's RTF data dictionaries into `raw/<study>/`. A UKDS download
+ships them in `mrdoc/ukda_data_dictionary/` or `mrdoc/ukda_data_dictionaries/`
+(sometimes zipped as `ukda_data_dictionaries.zip`: unzip it first). Each file is
+`<file>_ukda_data_dictionary.rtf`, where `<file>` is the data file's name, and
+that name is what goes in `files.csv`.
 
-**From a UKDS download's RTF dictionaries** (most deposits ship them in
-`mrdoc/ukda_data_dictionaries/`, or zipped as `ukda_data_dictionaries.zip`):
+Then write `files.csv` (the deposit's file information table has the
+descriptions; the wave for each file is yours to decide) and `dataset.toml`,
+and run the parse and `python3 build.py --check`.
 
-```
-python3 tools/ukda_rtf_to_csv.py path/to/mrdoc/ukda_data_dictionaries datasets/<key>/dictionaries
-```
+The parse checks each dictionary's variable count against the count the RTF
+itself declares, and stops on any difference. An RTF in `raw/` with no row in
+`files.csv` is skipped with a note.
 
-It accepts the folder, the zip or a single `.rtf`, and checks each
-dictionary's variable count against the count the RTF itself declares,
-failing if they differ. This is how `next_steps` was made.
+Where the raw files came from:
 
-**From CSVs already in this layout.** `bcs70` was copied from the
-`bcs70-core` repository, whose deposits carry
-`*_ukda_data_dictionary_variables.csv` files with these columns; `files.csv`
-came from its `master_file_info_lookup.csv` (rows with `file_type = tab`).
+- `bcs70`: the UKDS tab deposits in `bcs70-core-data/bcs70/UKDS/*/mrdoc/`,
+  22 studies. `bcs70_age16_school_type` is deposited under both 3535 (16y)
+  and 7473 (42y); the two copies are identical and `files.csv` uses 3535.
+- `next_steps`: SN 5545, 18th edition, `mrdoc/ukda_data_dictionaries/`.
 
-The converter writes the CSVs flat. Write `files.csv` (the deposit's file
-information table has the descriptions; the wave for each file is yours to
-decide), then shuffle the dictionaries into their wave folders:
-
-```
-python3 tools/shuffle_dictionaries.py datasets/<key>
-```
-
-It moves each `<file>.csv` to `dictionaries/<wave>/` from its row in
-`files.csv`, and is safe to re-run after changing a wave. Then write
-`dataset.toml` and run `python3 build.py --check`.
+`tools/ukda_rtf_to_csv.py` is the converter underneath; it can also be run on
+its own against a folder, a zip or a single `.rtf` to inspect one deposit.
 
 ## Checklist
 
 - [ ] `datasets/<key>/dataset.toml` with `key`, `name`, `identifier` and every wave in order
 - [ ] `files.csv`: one row per data file, unique `file`, valid `wave`
-- [ ] a dictionary for every file, in its wave's folder, and no dictionary without a file
+- [ ] an RTF under `raw/<study>/` for every file in `files.csv`
+- [ ] `python3 tools/parse_dictionaries.py <key>` runs without errors
 - [ ] `python3 build.py --check` passes with no errors
 - [ ] `python3 build.py && python3 -m http.server -d site` and search a few known variables

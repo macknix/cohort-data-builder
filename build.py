@@ -254,12 +254,14 @@ def load_dataset(folder: Path, p: Problems) -> dict | None:
         path = on_disk.get(f["name"])
         at = f"{where}/dictionaries/{f['wave']}/{f['name']}.csv"
         if path is None:
-            p.error(at, "missing — every file in files.csv needs a dictionary")
+            hint = (f"run `python3 tools/parse_dictionaries.py {folder.name}` to build it from raw/"
+                    if (folder / "raw").is_dir() else "every file in files.csv needs a dictionary")
+            p.error(at, f"missing — {hint}")
             continue
         if path.parent.name != f["wave"]:
             p.error(f"{where}/{path.relative_to(folder)}",
                     f'is in "{path.parent.name}/" but files.csv says wave "{f["wave"]}" '
-                    f"(tools/shuffle_dictionaries.py puts it right)")
+                    f"(re-run tools/parse_dictionaries.py)")
             continue
         cols, rows = read_csv(path)
         absent = [c for c in DICT_COLUMNS[:3] if c not in cols]

@@ -1,4 +1,8 @@
 # The 1970 British Cohort Study. See docs/metadata-spec.md for every field.
+#
+# raw/<study>/ holds the RTF data dictionaries from the UKDS tab deposits, one
+# folder per study number. Build the dictionaries from them with
+#   python3 tools/parse_dictionaries.py bcs70
 
 [dataset]
 key         = "bcs70"

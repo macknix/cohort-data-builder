@@ -1,9 +1,8 @@
 # Next Steps (formerly LSYPE). See docs/metadata-spec.md for every field.
 #
-# Dictionaries converted from the UKDS deposit (SN 5545, 18th edition,
-# February 2025), then sorted into wave folders from files.csv:
-#   python3 tools/ukda_rtf_to_csv.py mrdoc/ukda_data_dictionaries datasets/next_steps/dictionaries
-#   python3 tools/shuffle_dictionaries.py datasets/next_steps
+# raw/5545/ holds the RTF data dictionaries from the UKDS deposit (SN 5545,
+# 18th edition, February 2025). Build the dictionaries from them with
+#   python3 tools/parse_dictionaries.py next_steps
 # Descriptions are from 5545_file_information.rtf, except ns9_2022_longitudinal_file,
 # ns9_2022_pregnancy_history and ns9_2022_person_grid, which it does not list, and
 # ns9_2022_activity_history, which it describes as the main interview file.

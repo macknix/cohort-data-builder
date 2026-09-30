@@ -95,6 +95,8 @@ class RtfConverter(unittest.TestCase):
 
 class Datasets(unittest.TestCase):
     def test_every_committed_dataset_is_valid(self):
+        if not any(build.DATASETS.glob("*/dictionaries")):
+            self.skipTest("dictionaries not built: python3 tools/parse_dictionaries.py")
         p = build.Problems()
         for folder in sorted(q for q in build.DATASETS.iterdir() if q.is_dir()):
             build.load_dataset(folder, p)
@@ -127,15 +129,51 @@ class Datasets(unittest.TestCase):
             errors = self.make(Path(tmp), "dictionaries/main.csv").errors
             self.assertTrue(any("must be in a wave folder" in e for e in errors), errors)
 
-    def test_shuffle_puts_dictionaries_in_place(self):
-        import shuffle_dictionaries
+
+
+class ParseDictionaries(unittest.TestCase):
+    """tools/parse_dictionaries.py: raw RTFs in, wave folders out."""
+
+    def make(self, tmp: Path, files_csv: str, raws: dict[str, bytes]) -> Path:
+        folder = tmp / "demo"
+        for rel, data in raws.items():
+            (folder / "raw" / rel).parent.mkdir(parents=True, exist_ok=True)
+            (folder / "raw" / rel).write_bytes(data)
+        (folder / "files.csv").write_text(files_csv)
+        return folder
+
+    def test_writes_each_file_into_its_wave_folder(self):
+        import parse_dictionaries
         with tempfile.TemporaryDirectory() as tmp:
-            folder = Path(tmp) / "demo"
-            (folder / "dictionaries").mkdir(parents=True)
-            (folder / "files.csv").write_text("file,wave,description\nmain,1y,Main\n")
-            (folder / "dictionaries" / "main.csv").write_text("pos,variable,variable_label\n")
-            self.assertEqual(shuffle_dictionaries.main([str(folder)]), 0)
-            self.assertTrue((folder / "dictionaries" / "1y" / "main.csv").exists())
+            folder = self.make(Path(tmp), "file,wave,study,description\ndemo,1y,100,Demo\n",
+                               {"100/demo_ukda_data_dictionary.rtf": SAMPLE_RTF})
+            (folder / "dictionaries" / "old").mkdir(parents=True)
+            (folder / "dictionaries" / "old" / "stale.csv").write_text("x")
+            written, problems = parse_dictionaries.parse_dataset(folder)
+            self.assertEqual((written, problems), (1, []))
+            self.assertTrue((folder / "dictionaries" / "1y" / "demo.csv").exists())
+            self.assertFalse((folder / "dictionaries" / "old").exists())   # rebuilt from scratch
+
+    def test_a_file_in_two_studies_uses_the_one_files_csv_names(self):
+        import parse_dictionaries
+        other = SAMPLE_RTF.replace(b"NSID", b"OTHERID")
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = self.make(Path(tmp), "file,wave,study,description\ndemo,1y,200,Demo\n",
+                               {"100/demo_ukda_data_dictionary.rtf": other,
+                                "200/demo_ukda_data_dictionary.rtf": SAMPLE_RTF})
+            parse_dictionaries.parse_dataset(folder)
+            text = (folder / "dictionaries" / "1y" / "demo.csv").read_text()
+            self.assertIn("NSID", text)
+            self.assertNotIn("OTHERID", text)
+
+    def test_missing_rtf_is_reported(self):
+        import parse_dictionaries
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = self.make(Path(tmp), "file,wave,study,description\nabsent,1y,100,A\n",
+                               {"100/demo_ukda_data_dictionary.rtf": SAMPLE_RTF})
+            written, problems = parse_dictionaries.parse_dataset(folder)
+            self.assertEqual(written, 0)
+            self.assertTrue(problems and "absent" in problems[0])
 
 
 if __name__ == "__main__":

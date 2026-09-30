@@ -2,3 +2,6 @@ site/data/
 .venv/
 __pycache__/
 .DS_Store
+
+# Generated from datasets/<key>/raw/ by tools/parse_dictionaries.py
+datasets/*/dictionaries/

@@ -114,6 +114,11 @@ VALUE = re.compile(r"^\s*Value = (\S+)\s+Label = ?(.*)$")
 DECLARED = re.compile(r"^\s*Number of variables =\s*([\d,]+)")
 
 
+def squash(text: str) -> str:
+    """Runs of spaces collapsed: the RTFs pad labels with them ("YES     RANDOM")."""
+    return " ".join(text.split())
+
+
 def parse(text: str) -> tuple[list[dict], int | None]:
     """The variables in one dictionary's text, in file order, and the count
     the dictionary's own header declares."""
@@ -124,7 +129,7 @@ def parse(text: str) -> tuple[list[dict], int | None]:
         if declared is None and (m := DECLARED.match(line)):
             declared = int(m[1].replace(",", ""))
         elif m := POS.match(line):
-            cur = {"pos": m[1].replace(",", ""), "variable": m[2], "variable_label": m[3].strip(),
+            cur = {"pos": m[1].replace(",", ""), "variable": m[2], "variable_label": squash(m[3]),
                    "variable_type": None, "measurement_level": None,
                    "spss_user_missing_values": None, "values": []}
             rows.append(cur)
@@ -135,7 +140,7 @@ def parse(text: str) -> tuple[list[dict], int | None]:
         elif m := MISSING.match(line):
             cur["spss_user_missing_values"] = " ".join(m[1].split())
         elif m := VALUE.match(line):
-            cur["values"].append({"value": m[1], "label": m[2].strip()})
+            cur["values"].append({"value": m[1], "label": squash(m[2])})
     return rows, declared
 
 
