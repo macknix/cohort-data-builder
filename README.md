@@ -44,8 +44,9 @@ and `.sav` needs Python's `pyreadstat`.
 
 ```
 datasets/<key>/      the metadata for each dataset — see docs/metadata-spec.md
-  raw/               the deposit's RTF data dictionaries, by UKDS study number
-  dictionaries/      generated from raw/, one folder per wave (age), not committed
+  raw/               the deposit's RTF data dictionaries: on your machine only
+                     (git-ignored); raw/README.md says where to get them
+  dictionaries/      parsed from raw/, one folder per wave (age), committed
 schema/topics.yaml   the topic schema variables are tagged with
 enrich/              the tagging pipeline (python -m enrich)
 templates/           the R, Python and README templates the download is made from
@@ -61,7 +62,6 @@ tests/
 ## Running it locally
 
 ```
-python3 tools/parse_dictionaries.py   # raw RTFs -> datasets/*/dictionaries/
 python3 build.py                      # validate and build site/data/
 python3 -m http.server -d site 8000   # then open http://localhost:8000
 ```
@@ -124,6 +124,17 @@ Tags are stored in `datasets/<key>/tags/`: `tags.jsonl` (one line per
 variable, with the model and schema that made it) and `schema.json` (the
 schema snapshot the site reads, so `build.py` needs no YAML parser).
 
+## Updating the dictionaries
+
+The parsed dictionaries are committed; the RTFs they come from are not. To
+regenerate them, put the RTFs in place (each `datasets/<key>/raw/README.md`
+says where they come from), then:
+
+```
+python3 tools/parse_dictionaries.py    # every dataset with RTFs in raw/
+git add datasets/*/dictionaries
+```
+
 ## Adding a dataset
 
 See [docs/metadata-spec.md](docs/metadata-spec.md): what the folder must
@@ -134,7 +145,6 @@ deposit.
 
 ```
 uv sync --extra test
-python3 tools/parse_dictionaries.py
 python3 build.py
 uv run python -m unittest discover -s tests
 ```

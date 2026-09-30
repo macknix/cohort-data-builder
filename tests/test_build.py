@@ -171,9 +171,13 @@ class ParseDictionaries(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             folder = self.make(Path(tmp), "file,wave,study,description\nabsent,1y,100,A\n",
                                {"100/demo_ukda_data_dictionary.rtf": SAMPLE_RTF})
+            (folder / "dictionaries" / "1y").mkdir(parents=True)
+            (folder / "dictionaries" / "1y" / "kept.csv").write_text("x")
             written, problems = parse_dictionaries.parse_dataset(folder)
             self.assertEqual(written, 0)
             self.assertTrue(problems and "absent" in problems[0])
+            # Committed dictionaries are not cleared when the RTFs are not all here.
+            self.assertTrue((folder / "dictionaries" / "1y" / "kept.csv").exists())
 
 
 if __name__ == "__main__":

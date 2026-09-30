@@ -5,9 +5,10 @@ name: Test and publish
 #
 # Requires Settings -> Pages -> Source -> GitHub Actions.
 #
-# The dictionaries and site/data/ are generated here rather than committed, so
-# the published site is always built from the raw RTFs and tags of the commit
-# being published.
+# site/data/ is generated here rather than committed, so the published site is
+# always built from the dictionaries and tags of the commit being published.
+# The dictionaries themselves are committed: the RTFs they are parsed from are
+# not in the repository (see datasets/*/raw/README.md).
 
 on:
   push:
@@ -32,8 +33,6 @@ jobs:
         run: Rscript -e 'install.packages("haven", repos = "https://cloud.r-project.org")'
       - name: Install Python dependencies
         run: uv sync --extra test
-      - name: Parse the raw dictionaries
-        run: python3 tools/parse_dictionaries.py
       - name: Build site data
         run: uv run python build.py
       - name: Test
@@ -55,8 +54,6 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
-      - name: Parse the raw dictionaries
-        run: python3 tools/parse_dictionaries.py
       - name: Build site data
         run: python3 build.py
       - uses: actions/configure-pages@v5

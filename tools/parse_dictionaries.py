@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """Build every dataset's dictionaries from its raw UKDA RTF files.
 
-    python3 tools/parse_dictionaries.py              # every dataset with a raw/ folder
+    python3 tools/parse_dictionaries.py              # every dataset with RTFs in raw/
     python3 tools/parse_dictionaries.py next_steps   # just one
 
 For each dataset it reads
 
-    datasets/<key>/raw/<study>/<file>_ukda_data_dictionary.rtf   the source, committed
+    datasets/<key>/raw/<study>/<file>_ukda_data_dictionary.rtf   on your machine only
     datasets/<key>/files.csv                                     which files, which wave
 
 and writes
 
-    datasets/<key>/dictionaries/<wave>/<file>.csv                generated, not committed
+    datasets/<key>/dictionaries/<wave>/<file>.csv                commit these
+
+The RTFs are git-ignored; datasets/<key>/raw/README.md says where to get them.
 
 The dictionaries folder is rebuilt from scratch each time, so it never holds a
 file the raw folder no longer explains. Where one file is deposited under two
@@ -50,6 +52,13 @@ def parse_dataset(folder: Path) -> tuple[int, list[str]]:
     for stem in sorted(set(sources) - listed):
         print(f"  note: raw/{sources[stem][0].relative_to(raw)} has no row in files.csv; skipped")
 
+    # Every RTF must be here before anything is touched: the dictionaries are
+    # committed, and clearing them on a machine without the RTFs would lose them.
+    absent = [r["file"].strip() for r in files if r["file"].strip() not in sources]
+    if absent:
+        return 0, [f"no RTF under raw/ for {len(absent)} file(s), e.g. {', '.join(absent[:3])}; "
+                   f"dictionaries left as they were (see raw/README.md)"]
+
     out = folder / "dictionaries"
     if out.exists():
         shutil.rmtree(out)
@@ -57,12 +66,9 @@ def parse_dataset(folder: Path) -> tuple[int, list[str]]:
     written = 0
     for r in files:
         name, wave, study = r["file"].strip(), r["wave"].strip(), (r.get("study") or "").strip()
-        found = sources.get(name, [])
+        found = sources[name]
         if len(found) > 1:
             found = [p for p in found if p.parent.name == study] or found[:1]
-        if not found:
-            problems.append(f"{name}: no {name}{SUFFIX} under raw/")
-            continue
         rows, declared = parse(rtf_to_text(found[0].read_bytes()))
         if not rows:
             problems.append(f"{name}: no variables found in {found[0].relative_to(raw)}")
@@ -81,9 +87,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("datasets", nargs="*", help="dataset keys; default: every one with a raw/ folder")
     args = ap.parse_args(argv)
 
-    keys = args.datasets or sorted(p.name for p in DATASETS.iterdir() if (p / "raw").is_dir())
+    has_rtfs = lambda p: any((p / "raw").rglob(f"*{SUFFIX}"))  # noqa: E731
+    keys = args.datasets or sorted(p.name for p in DATASETS.iterdir() if has_rtfs(p))
     if not keys:
-        print("No dataset has a raw/ folder.", file=sys.stderr)
+        print("No dataset has RTFs in raw/. Each datasets/<key>/raw/README.md says "
+              "where to get them.", file=sys.stderr)
         return 1
     failed = 0
     for key in keys:

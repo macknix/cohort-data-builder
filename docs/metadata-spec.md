@@ -9,17 +9,18 @@ datasets/
   <key>/
     dataset.toml               about the study
     files.csv                  one row per data file
-    raw/
+    raw/                       git-ignored, except its README.md
       <study>/                 one folder per UKDS study number
         <file>_ukda_data_dictionary.rtf   the deposit's own data dictionaries
-    tags/                      optional: topic tags, written by `python -m enrich`
-    dictionaries/              GENERATED from raw/, not committed
+    dictionaries/              parsed from raw/, committed
       <wave>/                  one folder per wave, named by its key (age)
         <file>.csv             one per data file: its variables
+    tags/                      optional: topic tags, written by `python -m enrich`
 ```
 
-You commit `dataset.toml`, `files.csv`, `raw/` and `tags/`. The dictionaries
-are built from `raw/`:
+You commit `dataset.toml`, `files.csv`, `dictionaries/`, `tags/` and
+`raw/README.md`. The RTFs stay on your machine; the dictionaries are parsed
+from them and committed:
 
 ```
 python3 tools/parse_dictionaries.py            # every dataset
@@ -32,7 +33,7 @@ For example `raw/9347/bcs11_age51_main_ukda_data_dictionary.rtf` becomes
 under `raw/` or a wave in `files.csv`; it rebuilds the folder from scratch.
 
 `python3 build.py --check` validates a dataset against everything below, and
-CI runs the parse and the same check on every pull request.
+CI runs the same check, on the committed dictionaries, on every pull request.
 
 ## `dataset.toml`
 
@@ -62,12 +63,12 @@ If the same file is deposited under two waves (BCS70's
 `bcs70_age16_school_type` is in both the 16y and 42y deposits), list it once,
 under the wave it describes.
 
-## `dictionaries/<wave>/<file>.csv` (generated)
+## `dictionaries/<wave>/<file>.csv` (parsed, committed)
 
 Written by `tools/parse_dictionaries.py`, one per row of `files.csv`, in the
 folder for that file's wave (`dictionaries/25y/`, `dictionaries/xwave/`, …).
-One row per variable, in file order. You do not edit these; the columns are
-listed so it is clear what the site and the tagging read.
+One row per variable, in file order. Regenerate rather than edit them; the
+columns are listed so it is clear what the site and the tagging read.
 
 | Column | Required | Example | Notes |
 |---|---|---|---|
@@ -106,7 +107,9 @@ Every download's `codebook.csv` lists exactly which codes each column uses.
 
 ## Getting the raw dictionaries
 
-Copy the deposit's RTF data dictionaries into `raw/<study>/`. A UKDS download
+Copy the deposit's RTF data dictionaries into `raw/<study>/` (git ignores
+them; add a `raw/README.md` saying where they came from, as the existing
+datasets do). A UKDS download
 ships them in `mrdoc/ukda_data_dictionary/` or `mrdoc/ukda_data_dictionaries/`
 (sometimes zipped as `ukda_data_dictionaries.zip`: unzip it first). Each file is
 `<file>_ukda_data_dictionary.rtf`, where `<file>` is the data file's name, and
@@ -135,6 +138,6 @@ its own against a folder, a zip or a single `.rtf` to inspect one deposit.
 - [ ] `datasets/<key>/dataset.toml` with `key`, `name`, `identifier` and every wave in order
 - [ ] `files.csv`: one row per data file, unique `file`, valid `wave`
 - [ ] an RTF under `raw/<study>/` for every file in `files.csv`
-- [ ] `python3 tools/parse_dictionaries.py <key>` runs without errors
+- [ ] `python3 tools/parse_dictionaries.py <key>` runs without errors, and `dictionaries/` is committed
 - [ ] `python3 build.py --check` passes with no errors
 - [ ] `python3 build.py && python3 -m http.server -d site` and search a few known variables
