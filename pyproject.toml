@@ -1,5 +1,5 @@
 [project]
-name = "survey-merge"
+name = "cohort-data-builder"
 version = "0.1.0"
 description = "Search longitudinal survey variables, merge them, and tag them by topic."
 requires-python = ">=3.11"

@@ -128,3 +128,33 @@ def apply_missing_codes(series: pd.Series, codes: dict | None) -> pd.Series:
         hi = float("inf") if hi is None else hi
         drop |= series.between(lo, hi)
     return series.mask(drop)
+
+
+def write_output(data: pd.DataFrame, path: Path, fmt: str,
+                 labels: dict | None = None, value_labels: dict | None = None) -> Path:
+    """Write one table as csv, dta (Stata) or sav (SPSS). `path` has no extension.
+
+    Stata and SPSS files carry each column's label and its value labels, from
+    the data dictionary, so they open ready to use. CSV has nowhere to put
+    them; codebook.csv lists them instead. Stata keeps variable labels to 80
+    characters, so longer ones are cut there.
+    """
+    file = path.with_name(f"{path.name}.{fmt}")
+    if fmt == "csv":
+        data.to_csv(file, index=False)
+        return file
+    if fmt not in ("dta", "sav"):
+        raise SystemExit(f'OUTPUT_FORMAT must be "csv", "dta" or "sav", not "{fmt}".')
+    labels = {c: l for c, l in (labels or {}).items() if c in data.columns}
+    codes = {c: v for c, v in (value_labels or {}).items()
+             if c in data.columns and pd.api.types.is_numeric_dtype(data[c])}
+    # Both writers want plain object strings, not pandas' string dtype.
+    data = data.astype({c: object for c in data.columns if pd.api.types.is_string_dtype(data[c])})
+    if fmt == "dta":
+        data.to_stata(file, write_index=False, version=118,
+                      variable_labels={c: l[:80] for c, l in labels.items()},
+                      value_labels={c: {int(k): v for k, v in m.items()} for c, m in codes.items()})
+    else:
+        _pyreadstat().write_sav(data, str(file), column_labels=labels,
+                                variable_value_labels=codes)
+    return file

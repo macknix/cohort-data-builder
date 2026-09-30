@@ -81,14 +81,33 @@ def num(s: str) -> float | None:
 
 @unittest.skipUnless(HAVE_NODE, "node is not installed")
 @unittest.skipUnless((ROOT / "site/data/templates.json").exists(), "run build.py first")
+def read_output(path: Path, fmt: str) -> tuple[list[dict], dict, list[dict]]:
+    """Rows as strings (as a CSV would give them), variable labels, and every
+    value-label set in the file."""
+    if fmt == "csv":
+        return read(path), {}, []
+    import pandas as pd
+    if fmt == "dta":
+        with pd.read_stata(path, iterator=True) as r:
+            labels, sets = r.variable_labels(), list(r.value_labels().values())
+        df = pd.read_stata(path, convert_categoricals=False)
+    else:
+        import pyreadstat
+        df, meta = pyreadstat.read_sav(str(path), user_missing=True)
+        labels, sets = meta.column_names_to_labels, list(meta.variable_value_labels.values())
+    rows = [{c: "" if pd.isna(v) else str(v) for c, v in rec.items()} for rec in df.to_dict("records")]
+    return rows, labels, [{float(k): v for k, v in m.items()} for m in sets]
+
+
 class GeneratedScripts(unittest.TestCase):
     na = True
+    fmt = "csv"
 
     @classmethod
     def setUpClass(cls):
         cls.tmp = Path(tempfile.mkdtemp())
         subprocess.run(["node", str(ROOT / "tests/generate_bundle.mjs"), "bcs70",
-                        str(cls.tmp), "true" if cls.na else "false", *PICKS],
+                        str(cls.tmp), "true" if cls.na else "false", cls.fmt, *PICKS],
                        check=True, capture_output=True, text=True)
         data = cls.tmp / "data"
         (data / "bcs7072a.tab").write_text(TAB)
@@ -102,13 +121,22 @@ class GeneratedScripts(unittest.TestCase):
         shutil.rmtree(cls.tmp, ignore_errors=True)
 
     def run_lang(self, lang: str) -> dict[str, list[dict]]:
+        """Run one language's merge; the outputs keyed as if they were CSVs, so
+        every format is checked by the same assertions. Labels kept aside."""
         out = self.tmp / "output"
         shutil.rmtree(out, ignore_errors=True)
         cmd = (["Rscript", "R/merge.R"] if lang == "r"
                else [sys.executable, "python/merge.py"])
         res = subprocess.run(cmd, cwd=self.tmp, capture_output=True, text=True)
         self.assertEqual(res.returncode, 0, f"{lang} failed:\n{res.stdout}\n{res.stderr}")
-        return {p.name: read(p) for p in out.glob("*.csv")}
+        files = sorted(out.glob(f"*.{self.fmt}"))
+        self.assertTrue(files, f"no .{self.fmt} output")
+        got, self.labels = {}, {}
+        for p in files:
+            rows, labels, sets = read_output(p, self.fmt)
+            got[p.stem + ".csv"] = rows
+            self.labels[p.stem] = (labels, sets)
+        return got
 
     def check(self, got: dict[str, list[dict]]) -> None:
         merged = {r["bcsid"]: r for r in got["merged.csv"]}
@@ -132,6 +160,28 @@ class GeneratedScripts(unittest.TestCase):
         self.assertEqual(len(long), 3)
         self.assertNotIn("wsweep05", got["merged.csv"][0])
         self.assertIn(9.0, [num(r["wsweep05"]) for r in long])
+
+    def check_labels(self) -> None:
+        if self.fmt == "csv":
+            return
+        labels, sets = self.labels["merged"]
+        self.assertEqual(labels["mother_age"], "Mothers age at Delivery")
+        self.assertTrue(labels["bcsid"].startswith("Identifier"))
+        # bd3inc's value labels, including the two missing codes.
+        self.assertTrue(any(m.get(8.0) == "refused" and m.get(0.0) == "£250 +" for m in sets), sets)
+
+    @unittest.skipUnless(HAVE_R and HAVE_HAVEN, "Rscript with haven is needed")
+    def test_r_labels(self):
+        if self.fmt != "csv" and not HAVE_PANDAS:
+            self.skipTest("pandas is needed to read the output back")
+        self.run_lang("r")
+        self.check_labels()
+
+    @unittest.skipUnless(HAVE_PANDAS and HAVE_PYREADSTAT and HAVE_HAVEN,
+                         "pandas, pyreadstat and R's haven (for fixtures) are needed")
+    def test_python_labels(self):
+        self.run_lang("python")
+        self.check_labels()
 
     @unittest.skipUnless(HAVE_R and HAVE_HAVEN, "Rscript with haven is needed")
     def test_r(self):
@@ -157,6 +207,16 @@ class GeneratedScripts(unittest.TestCase):
 
 class KeepingCodes(GeneratedScripts):
     na = False
+
+
+@unittest.skipUnless(HAVE_PANDAS and HAVE_PYREADSTAT, "pandas and pyreadstat read the output back")
+class StataOutput(GeneratedScripts):
+    fmt = "dta"
+
+
+@unittest.skipUnless(HAVE_PANDAS and HAVE_PYREADSTAT, "pandas and pyreadstat read the output back")
+class SpssOutput(GeneratedScripts):
+    fmt = "sav"
 
 
 def _isnum(v: str) -> bool:

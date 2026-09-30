@@ -125,3 +125,33 @@ apply_missing_codes <- function(x, codes) {
   x[drop] <- NA
   x
 }
+
+# Write one table as csv, dta (Stata) or sav (SPSS). `path` has no extension.
+#
+# Stata and SPSS files carry each column's label and its value labels, from
+# the data dictionary, so they open ready to use. CSV has nowhere to put them;
+# codebook.csv lists them instead. Stata keeps variable labels to 80
+# characters, so longer ones are cut there.
+write_output <- function(data, path, format, labels = list(), value_labels = list()) {
+  file <- paste0(path, ".", format)
+  if (format == "csv") {
+    utils::write.csv(data, file, row.names = FALSE, na = "")
+    return(file)
+  }
+  if (!format %in% c("dta", "sav")) {
+    stop("OUTPUT_FORMAT must be \"csv\", \"dta\" or \"sav\", not \"", format, "\".", call. = FALSE)
+  }
+  needs_haven(format)
+  for (column in names(data)) {
+    codes <- value_labels[[column]]
+    if (!is.null(codes) && is.numeric(data[[column]])) {
+      data[[column]] <- haven::labelled(as.double(data[[column]]), labels = codes)
+    }
+    label <- labels[[column]]
+    if (!is.null(label)) {
+      attr(data[[column]], "label") <- if (format == "dta") substr(label, 1, 80) else label
+    }
+  }
+  if (format == "dta") haven::write_dta(data, file) else haven::write_sav(data, file)
+  file
+}

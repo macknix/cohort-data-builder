@@ -3,7 +3,7 @@
    Imports nothing, so it can never take part in a cycle. Touches no DOM. */
 
 export const LEVEL_UNRECORDED = -1;   // dictionary records no measurement level
-export const DRAG_MIME = "application/x-survey-merge-variable";
+export const DRAG_MIME = "application/x-cohort-data-builder-variable";
 
 export const state = {
   catalogue: [],     // data/datasets.json: every dataset on the site
@@ -32,12 +32,10 @@ export const state = {
   // {name, label, file, wave, column}, where `column` is the output name and
   // the only part that may be edited. Kept per dataset.
   bundle: [],
-  // The topics grid starts open where there is room for it beside the list,
-  // closed on a phone; after that it stays however it was left.
+  // The topic rows start collapsed on every visit, so the page opens on the
+  // sweep bars and the list; gridOpen is not remembered between visits.
   options: { languages: ["r", "python"], missingToNa: true, minConf: 50,
-             gridOpen: typeof matchMedia === "function" &&
-               matchMedia("(min-width: 900px) and (min-height: 700px)").matches,
-             gridShade: "row" },
+             gridOpen: false, gridShade: "row", outputFormat: "csv" },
   templates: null,   // data/templates.json, fetched at first download
   view: "search",
 };
@@ -45,7 +43,7 @@ export const state = {
 /* Storage is namespaced by dataset: a selection only makes sense against the
    dataset it was made in. */
 export const storeKey = (name, key = state.manifest?.key) =>
-  `survey-merge:${key || "_"}:${name}`;
+  `cohort-data-builder:${key || "_"}:${name}`;
 
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));

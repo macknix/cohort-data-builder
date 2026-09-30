@@ -20,7 +20,22 @@ function fail(msg) {
     '<p style="font-family:var(--mono);padding:40px;max-width:60ch">' + msg + "</p>";
 }
 
+/* Settings and selections were stored under the tool's old name,
+   survey-merge; move them across once so nobody loses them. */
+function migrateStorage() {
+  try {
+    const old = "survey-merge:";
+    for (const key of Object.keys(localStorage)) {
+      if (!key.startsWith(old)) continue;
+      const renamed = `cohort-data-builder:${key.slice(old.length)}`;
+      if (localStorage.getItem(renamed) === null) localStorage.setItem(renamed, localStorage.getItem(key));
+      localStorage.removeItem(key);
+    }
+  } catch { /* storage unavailable: nothing to move */ }
+}
+
 async function boot() {
+  migrateStorage();
   try {
     state.catalogue = (await getJson("data/datasets.json")).datasets;
   } catch {
@@ -78,7 +93,7 @@ async function openDataset(key) {
   $("#q").value = "";
 
   const m = state.manifest;
-  document.title = `${m.name} · survey-merge`;
+  document.title = `${m.name} · Cohort Data Builder`;
   $("#mark-sub").textContent = m.fullName;
   $("#foot-counts").textContent =
     `${m.counts.variables.toLocaleString()} variables · ${m.counts.files} files · ` +

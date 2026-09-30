@@ -144,6 +144,8 @@ export function renderGrid() {
   $("#min-conf").value = String(state.options.minConf);
   $("#shade").value = state.options.gridShade;
   const open = state.options.gridOpen;
+  // Shading only means anything while the topic rows are showing.
+  $("#shade-control").hidden = !open;
   $("#tgrid-toggle").setAttribute("aria-expanded", String(open));
   $("#tgrid-toggle .tg-caret").textContent = open ? "▾" : "▸";
   const body = $("#tgrid-body");
