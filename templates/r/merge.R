@@ -1,4 +1,4 @@
-# {{dataset}}: variables selected with survey-merge on {{created}}.
+# {{dataset}}: variables selected with Cohort Data Builder on {{created}}.
 #
 # Run this from the folder that holds README.md: open the .Rproj file in
 # RStudio and source this script, or run `Rscript R/merge.R` from a terminal.

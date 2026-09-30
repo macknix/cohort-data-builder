@@ -1,6 +1,6 @@
 # {{dataset}}: {{count}}
 
-Variables from {{full_name}}, selected with survey-merge on {{created}}.
+Variables from {{full_name}}, selected with Cohort Data Builder on {{created}}.
 {{languages}}
 
 **This archive contains no study data.** You supply the data files; the

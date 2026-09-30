@@ -1,4 +1,4 @@
-# survey-merge
+# Cohort Data Builder
 
 Search the variables of CLS longitudinal studies, pick the ones you need, and
 download R or Python code that reads them from your own copy of the data and

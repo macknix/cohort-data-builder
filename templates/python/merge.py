@@ -1,4 +1,4 @@
-"""{{dataset}}: variables selected with survey-merge on {{created}}.
+"""{{dataset}}: variables selected with Cohort Data Builder on {{created}}.
 
 Run from anywhere:  python python/merge.py
 README.md lists the data files it needs.

@@ -3,7 +3,7 @@
    Imports nothing, so it can never take part in a cycle. Touches no DOM. */
 
 export const LEVEL_UNRECORDED = -1;   // dictionary records no measurement level
-export const DRAG_MIME = "application/x-survey-merge-variable";
+export const DRAG_MIME = "application/x-cohort-data-builder-variable";
 
 export const state = {
   catalogue: [],     // data/datasets.json: every dataset on the site
@@ -43,7 +43,7 @@ export const state = {
 /* Storage is namespaced by dataset: a selection only makes sense against the
    dataset it was made in. */
 export const storeKey = (name, key = state.manifest?.key) =>
-  `survey-merge:${key || "_"}:${name}`;
+  `cohort-data-builder:${key || "_"}:${name}`;
 
 export const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
