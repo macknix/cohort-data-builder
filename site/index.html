@@ -52,7 +52,7 @@
           <label>tags ≥ <select id="min-conf" aria-label="Minimum topic confidence">
             <option value="30">30%</option><option value="50">50%</option>
             <option value="70">70%</option><option value="90">90%</option></select></label>
-          <label>shade <select id="shade" aria-label="How the topic rows are shaded">
+          <label id="shade-control">shade <select id="shade" aria-label="How the topic rows are shaded">
             <option value="row" title="Each row against its own busiest sweep">within topic</option>
             <option value="abs" title="Every cell on one scale">across topics</option></select></label>
         </div>
@@ -69,10 +69,10 @@
         </div>
         <!-- Then one row per topic: the topic filter, as a tree. -->
         <div class="ov-topics" id="tgrid" hidden>
-          <button class="ov-toggle" id="tgrid-toggle" aria-expanded="true" aria-controls="tgrid-body">
-            <span class="tg-caret">▾</span> Topics
+          <button class="ov-toggle" id="tgrid-toggle" aria-expanded="false" aria-controls="tgrid-body">
+            <span class="tg-caret">▸</span> Topics
             <span class="ov-hint">click a topic to filter · ▸ to see inside · counts are variables, not questions</span></button>
-          <div class="tgrid-body" id="tgrid-body"></div>
+          <div class="tgrid-body" id="tgrid-body" hidden></div>
         </div>
       </div>
     </section>

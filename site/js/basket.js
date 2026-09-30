@@ -99,7 +99,6 @@ export function restoreOptions() {
       if (!state.options.languages.length) state.options.languages = ["r", "python"];
       state.options.missingToNa = saved.missingToNa !== false;
       if ([30, 50, 70, 90].includes(saved.minConf)) state.options.minConf = saved.minConf;
-      if (typeof saved.gridOpen === "boolean") state.options.gridOpen = saved.gridOpen;
       state.options.gridShade = saved.gridShade === "abs" ? "abs" : "row";
       if (["csv", "dta", "sav"].includes(saved.outputFormat)) state.options.outputFormat = saved.outputFormat;
     }

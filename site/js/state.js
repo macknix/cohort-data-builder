@@ -32,12 +32,10 @@ export const state = {
   // {name, label, file, wave, column}, where `column` is the output name and
   // the only part that may be edited. Kept per dataset.
   bundle: [],
-  // The topics grid starts open where there is room for it beside the list,
-  // closed on a phone; after that it stays however it was left.
+  // The topic rows start collapsed on every visit, so the page opens on the
+  // sweep bars and the list; gridOpen is not remembered between visits.
   options: { languages: ["r", "python"], missingToNa: true, minConf: 50,
-             gridOpen: typeof matchMedia === "function" &&
-               matchMedia("(min-width: 900px) and (min-height: 700px)").matches,
-             gridShade: "row", outputFormat: "csv" },
+             gridOpen: false, gridShade: "row", outputFormat: "csv" },
   templates: null,   // data/templates.json, fetched at first download
   view: "search",
 };
