@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>survey-merge</title>
+<meta name="description" content="Search the variables of CLS longitudinal studies and download R or Python code that merges them from your own copy of the data.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>🧵</text></svg>">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="mark">
+    <span class="mark-name">survey-merge</span>
+    <span class="mark-sub" id="mark-sub"></span>
+  </div>
+
+  <label class="picker">Dataset
+    <select id="dataset" aria-label="Dataset"></select>
+  </label>
+
+  <nav class="views" aria-label="Views">
+    <button class="view-tab is-current" data-view="search" aria-current="page">Variables</button>
+    <button class="view-tab" data-view="basket" title="Drop a variable here to add it">Selection <span class="tally" id="basket-tally" hidden>0</span></button>
+  </nav>
+
+  <button class="theme" id="theme" type="button" aria-label="Switch colour theme" title="Switch colour theme"></button>
+</header>
+
+<main id="main">
+
+  <!-- ── Variables ─────────────────────────────────────────────────────
+       One page, top to bottom: an overview of what the study holds (every
+       sweep, every topic), a filter bar that stays in reach, and the
+       variables themselves, each opening in place. -->
+  <section class="view is-current" data-view="search">
+
+    <section class="overview" id="overview" aria-label="What the study holds">
+      <div class="ov-head">
+        <p class="ov-about" id="ov-about"></p>
+        <div class="ov-tools" id="ov-tools" hidden>
+          <label>tags ≥ <select id="min-conf" aria-label="Minimum topic confidence">
+            <option value="30">30%</option><option value="50">50%</option>
+            <option value="70">70%</option><option value="90">90%</option></select></label>
+          <label>shade <select id="shade" aria-label="How the topic rows are shaded">
+            <option value="row" title="Each row against its own busiest sweep">within topic</option>
+            <option value="abs" title="Every cell on one scale">across topics</option></select></label>
+        </div>
+      </div>
+
+      <div class="ov-chart" id="ov-chart">
+        <!-- Row one: every matching variable, by sweep. -->
+        <div class="ov-row ov-total">
+          <div class="ov-label">
+            <span class="ov-total-name" id="spine-title">All variables</span>
+            <span class="ov-count" id="spine-note"></span>
+          </div>
+          <ol class="spine-track" id="spine-track" aria-label="Matches by sweep"></ol>
+        </div>
+        <!-- Then one row per topic: the topic filter, as a tree. -->
+        <div class="ov-topics" id="tgrid" hidden>
+          <button class="ov-toggle" id="tgrid-toggle" aria-expanded="true" aria-controls="tgrid-body">
+            <span class="tg-caret">▾</span> Topics
+            <span class="ov-hint">click a topic to filter · ▸ to see inside · counts are variables, not questions</span></button>
+          <div class="tgrid-body" id="tgrid-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="filterbar" id="filterbar">
+      <label class="fb-search">
+        <span class="visually-hidden">Search variables</span>
+        <input type="search" id="q" placeholder="Search names and labels…" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="chips" id="active-filters"></div>
+      <div class="fb-end">
+        <select id="level" aria-label="Measurement level"></select>
+        <span class="fb-count" id="result-count">—</span>
+        <button class="link-btn" id="clear-filters" hidden>Clear</button>
+      </div>
+    </div>
+
+    <ol class="vtable" id="results" aria-label="Variables"></ol>
+    <div class="vmore" id="more" hidden></div>
+  </section>
+
+  <!-- ── Selection ────────────────────────────────────────────────── -->
+  <section class="view" data-view="basket">
+    <div class="pane pane-list" id="basket-drop">
+      <div class="finder">
+        <span class="field-label">Selected</span>
+        <p class="finder-help">Drag variables here from the list, or use the <strong>＋</strong> beside any row.</p>
+        <div class="picked">
+          <p class="picked-count" id="basket-count">Nothing selected yet</p>
+          <div class="picked-actions">
+            <button class="link-btn" id="basket-clear" hidden>Clear</button>
+          </div>
+        </div>
+      </div>
+      <ol class="results" id="basket-list"></ol>
+    </div>
+    <div class="grip" role="separator" aria-orientation="vertical"
+         tabindex="0" aria-label="Resize the list"
+         title="Drag to resize · double-click to reset"></div>
+    <div class="pane pane-detail" id="basket-detail" tabindex="-1"></div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <span id="foot-counts">—</span>
+  <span class="foot-sep">·</span>
+  <a href="https://github.com/macknix/cohort-data-builder">Repository</a>
+</footer>
+
+<script type="module" src="js/boot.js"></script>
+</body>
+</html>

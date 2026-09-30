@@ -1,0 +1,3 @@
+pandas>=1.5
+# Only needed for SPSS (.sav) files:
+pyreadstat>=1.2

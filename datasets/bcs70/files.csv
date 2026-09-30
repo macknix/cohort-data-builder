@@ -1,0 +1,85 @@
+file,wave,study,description
+bcs1derived,0y,2666,Derived Variables for the Birth Sweep Data
+bcs7072a,0y,2666,Birth Data
+bcs7072b,0y,2666,22-month Sub-sample
+bcs3derived,10y,3723,Derived Variables at 1980 Sweep (Ten-Year Follow-up) Data File
+bcs70_1980_audiometry,10y,3723,Audiogram Variables 1980 Ten-Year Follow-up Data File
+sn3723,10y,3723,Main BCS70 1980 Ten-Year Follow-up Data File
+bcs3_special_needs,10y,7064,BCS70 10-year Special Needs data
+bcs4derived,16y,3535,BCS70 16 Year Follow-up Derived Variables Data
+bcs7016x,16y,3535,BCS70 16 Year Follow-up Main Numeric Data
+bcs70_age16_school_type,16y,3535,Age 16 School Type Variable Data File
+jiig-cal_occupational_interests,16y,3535,JIIG-CAL Occupational Interests Data
+bcs70_htq,16y,5225,BCS70 Head Teacher Questionnaire data
+bcs70_16-year_arithmetic_data,16y,6095,BCS70 Arithmetic Test (Age 16) Data File
+bcs1986_reading_matrices,16y,8288,BCS 1970 Reading and Matrices Tests 1986 Data File
+bcs86_dietfdgp,16y,8618,BCS70 Sixteen-Year Follow-Up Diet Food Group Data
+bcs86_dietnut,16y,8618,BCS70 Sixteen-Year Follow-Up Diet Nutrient Categories Data
+bcs21yearsample,21y,4715,BCS70 21-year sample survey data
+bcs5derived,26y,3833,Derived Variables at 1996 Sweep (26-Year Follow-up) Data
+bcs96x,26y,3833,BCS70 26-year Follow Up Data
+bcs2000,29y,5558,BCS70 1999-2000 Data
+bcs6derived,29y,5558,BCS70 1999-2000 Derived Variables Data
+bcs7derived,34y,5585,Derived Variables at 2004-2005 Sweep (34 Year Follow-up) Data
+bcs_2004_adult_assessment_basic_skills,34y,5585,Cohort Member Basic Skills Assessment Data
+bcs_2004_child_assessment_bas,34y,5585,Child Assessment (British Ability Scale) Data
+bcs_2004_followup,34y,5585,Cohort Member Interview Data
+bcs_2004_parent_and_child,34y,5585,Parent and Child Interview Data
+bcs_2004_pc_0to11mths,34y,5585,Parent Self-completion on Children 0-11 Months Data
+bcs_2004_pc_1to2yr11mths,34y,5585,Parent Self-completion on Children 1-2 Years 11 Months Data
+bcs_2004_pc_3to5yr11mths,34y,5585,Parent Self-completion on Children 3-5 Years 11 Months Data
+bcs_2004_pc_6to16yr,34y,5585,Self-completion on Children 6-16 Years 11 Months Data
+bcs_2004_pc_yp_10to16,34y,5585,Young Person Self-completion 10-16 Years 11 Months Data
+bcs_age34_dast,34y,5585,Dyslexia Assessment Data
+bcs8derived,38y,6557,BCS70 38-Year Follow-up Derived Variables Data File
+bcs_2008_followup,38y,6557,BCS70 38-Year Follow-up Data File
+f690,42m,2690,Birth and 42 Month Data
+bcs70_2012_absent_older_child,42y,7473,Absent Children Data File
+bcs70_2012_child_died,42y,7473,Children Who Have Died Data File
+bcs70_2012_derived,42y,7473,Derived Variables Data File
+bcs70_2012_employment,42y,7473,Employment History Data File
+bcs70_2012_flatfile,42y,7473,Main Data File
+bcs70_2012_housing,42y,7473,Housing History Data File
+bcs70_2012_persongrid,42y,7473,Household Grid Data File
+bcs70_2012_qualifications,42y,7473,Qualifications History Data File
+bcs70_2012_relationships,42y,7473,Relationships Data File
+bcs70_2012_unfolding,42y,7473,Unfolding Brackets Data File
+bcs70_2012_unsucessful_pregnancies,42y,7473,Unsuccessful Pregnancies Data File
+bcs_age46_dietary_questionnaire,46y,8547,On-line Dietary Questionnaire Data File
+bcs_age46_employment,46y,8547,Employment History Data File
+bcs_age46_housing,46y,8547,Housing History Data File
+bcs_age46_long_acting_medication,46y,8547,Long-acting Medication Data File
+bcs_age46_main,46y,8547,"Core Interview, Self-completion and Nurse Administered Measurements Data File"
+bcs_age46_medication,46y,8547,BNF Codes for Medication Data File
+bcs_age46_nutrients,46y,8547,Nutrient Data File
+bcs_age46_persongrid,46y,8547,Household Grid Data File
+bcs_age46_qualifications,46y,8547,Qualifications History Data File
+bcs_age46_relationships,46y,8547,Relationships Data File
+bcs_age46_unfolding,46y,8547,Unfolding Brackets Data File
+bcs_age46_activpal_avg,46y,8611,BCS Age 46 Accelerometry ActivPal Average Data File
+bcs_age46_activpal_days,46y,8611,BCS Age 46 Accelerometry ActivPal Days Data File
+bcs11_age51_benefits_longf,51y,9347,State Benefits Long Format Data File
+bcs11_age51_covidbens_longf,51y,9347,Covid-19 State Benefits Long Format Data File
+bcs11_age51_covidvax_longf,51y,9347,Vaccinations for Covid-19 Long Format Data File
+bcs11_age51_debt_longf,51y,9347,Debts Owed Long Format Data File
+bcs11_age51_econshock_longf,51y,9347,Respondent Economic Shocks since Covid-19 Outbreak Long Format Data File
+bcs11_age51_econshockp_longf,51y,9347,Partner Economic Shocks since Covid-19 Outbreak Long Format Data File
+bcs11_age51_employment_longf,51y,9347,Economic Activity Histories Long Format Data File
+bcs11_age51_housing_longf,51y,9347,Housing Histories Long Format Data File
+bcs11_age51_main,51y,9347,Main Survey Data File
+bcs11_age51_persongrid_longf,51y,9347,Person Grid Long Format Data File
+bcs11_age51_qualifications_longf,51y,9347,Respondent Qualifications Long Format Data File
+bcs11_age51_qualificationsp_longf,51y,9347,Partner Qualifications Long Format Data File
+bcs11_age51_regincome_longf,51y,9347,Sources of Regular Household Income Long Format Data File
+bcs11_age51_relationships_longf,51y,9347,Relationship Histories Looped Long Format Data File
+bcs11_age51_savings_longf,51y,9347,Sources of Savings and Investments Long Format Data File
+bcs11_age51_unfolding,51y,9347,Approximate Value for Income or Payments Data File
+bcs2derived,5y,2699,Derived Variables at 1975 Sweep Data
+bcs70_1975_developmental_history,5y,2699,Developmental Histories Data
+f699a,5y,2699,Part A - Maternal Self-completion Questionnaire Data
+f699b,5y,2699,Part B - Home Interview Questionnaire Data
+f699c,5y,2699,Part C - Test Booklet Data
+bcs70_response_1970-2021,xwave,5641,BCS Response Data File
+bcs70_age16-51_partner_histories_long,xwave,6941,BCS70 Partner histories 1996-2016 Data File
+bcs70_age16-51_partnership_histories_long,xwave,6941,BCS70 Partnership histories 1996-2024 Data File
+bcs70_age16-51_activity_histories_long,xwave,6943,BCS70 Activity Histories 1986-202024 Data File

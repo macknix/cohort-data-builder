@@ -1,0 +1,10 @@
+site/data/
+.venv/
+__pycache__/
+.DS_Store
+
+# The deposits' RTF data dictionaries stay on your machine: each raw/ folder
+# keeps only its README, which says what goes there. The dictionaries parsed
+# from them (datasets/*/dictionaries/) ARE committed.
+datasets/*/raw/**
+!datasets/*/raw/README.md
