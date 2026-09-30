@@ -1,0 +1,3 @@
+pos,variable,variable_label,variable_type,measurement_level,spss_user_missing_values,value_labels_json
+1,BCSID,research case identifier,NA,NA,NA,[]
+2,BDSTYPE,"DV: School Type Age 42 (derived from STYPE, B9SC16TP and 1986 School Census)",numeric,NOMINAL,-1.0 thru None,"[{""value"": ""-1.0"", ""label"": ""Unknown""}, {""value"": ""1.0"", ""label"": ""Comprehensive""}, {""value"": ""2.0"", ""label"": ""Grammar""}, {""value"": ""3.0"", ""label"": ""Secondary Modern/Technical""}, {""value"": ""4.0"", ""label"": ""Independent Private""}, {""value"": ""5.0"", ""label"": ""LEA Special""}, {""value"": ""6.0"", ""label"": ""Independent Special""}, {""value"": ""7.0"", ""label"": ""Other""}, {""value"": ""8.0"", ""label"": ""Scottish LEA""}]"
