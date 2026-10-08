@@ -41,8 +41,8 @@
 
   <!-- ── Variables ─────────────────────────────────────────────────────
        One page, top to bottom: an overview of what the study holds (every
-       sweep, every topic), a filter bar that stays in reach, and the
-       variables themselves, each opening in place. -->
+       sweep, every topic), a filter bar, and the variables themselves,
+       each opening in place, in a box that scrolls on its own. -->
   <section class="view is-current" data-view="search">
 
     <section class="overview" id="overview" aria-label="What the study holds">
@@ -90,8 +90,10 @@
       </div>
     </div>
 
-    <ol class="vtable" id="results" aria-label="Variables"></ol>
-    <div class="vmore" id="more" hidden></div>
+    <div class="vscroll" id="vscroll" role="region" aria-label="Variables" tabindex="0">
+      <ol class="vtable" id="results"></ol>
+      <div class="vmore" id="more" hidden></div>
+    </div>
   </section>
 
   <!-- ── Selection ────────────────────────────────────────────────── -->

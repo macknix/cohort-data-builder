@@ -330,10 +330,10 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
 .tg-cell.is-col { box-shadow: 0 0 0 1px var(--contour); }
 
 /* ── The filter bar ───────────────────────────────────────────────────
-   Stays in reach under the masthead while the list scrolls. */
+   Sits above the list, which scrolls on its own beneath it. */
 
 .filterbar {
-  position: sticky; top: var(--mast-h, 56px); z-index: 20;
+  position: relative; z-index: 20;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
   padding: 10px 20px;
   background: var(--paper);
@@ -461,6 +461,28 @@ main { display: block; }
 .view[data-view="search"].is-current { display: block; }
 .pane-list { border-right: 1px solid var(--rule); background: var(--paper-2); }
 .pane-detail { padding: 24px 28px 60px; }
+
+/* Variables, on a wide screen: the page is one screen tall and the list
+   takes what is left under the filter bar, scrolling on its own. When the
+   overview leaves it less than 320px (a short window, the topics open), the
+   page scrolls again instead. A phone keeps the one long page. */
+@media (min-width: 901px) {
+  body:has(.view[data-view="search"].is-current) {
+    height: 100vh; height: 100dvh;
+    display: flex; flex-direction: column;
+  }
+  body:has(.view[data-view="search"].is-current) main {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto;
+  }
+  .view[data-view="search"].is-current {
+    display: flex; flex-direction: column; height: 100%;
+  }
+  .vscroll { flex: 1 1 0; min-height: 320px; overflow-y: auto; }
+  .vhead { position: sticky; top: 0; z-index: 1; background: var(--paper); }
+  /* Scrolled to, a row stops clear of the column header. */
+  .vscroll .vrow { scroll-margin-top: 34px; }
+}
+.vscroll:focus-visible { outline: 2px solid var(--contour); outline-offset: -2px; }
 
 /* ── The pane divider ─────────────────────────────────────────────────
 
@@ -890,7 +912,7 @@ body.is-dragging-var .view-tab[data-view="basket"] {
   /* On a phone only the filter bar stays: a pinned masthead as well would
      take a third of the screen. */
   .masthead { position: static; gap: 10px; }
-  .filterbar { top: 0; }
+  .filterbar { position: sticky; top: 0; }
   .mark { width: 100%; }
   .mark-sub { display: none; }
   .beta-bar { padding: 7px 12px; font-size: 12px; }
