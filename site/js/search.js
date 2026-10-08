@@ -2,9 +2,10 @@
 
    The list is built for scanning. Each row carries what decides whether a
    variable is worth a look — its name, its label in full, its sweep and its
-   topics — and nothing else. Everything secondary (value labels, missing
-   codes, the file it lives in) opens under the row on a click, a few lines
-   rather than a pane, so many variables stay on screen at once.
+   topics — and nothing else. Clicking a row selects it; everything
+   secondary (value labels, missing codes, other sweeps) opens under the row
+   from its own ▸ button, a few lines rather than a pane, so many variables
+   stay on screen at once.
 
    The search itself is a substring scan over the index the page already
    holds, so it finds a fragment of a half-remembered name as well as a word
@@ -103,40 +104,41 @@ function renderFilters() {
 
 /* ── The list ────────────────────────────────────────────────────────── */
 
-/* The control beside a row: ＋ to add, ✓ when added (✕ on hover to remove),
-   a fixed ✓ for the identifier, which is in every download already, and a
-   blank for a file with no identifier to merge on. */
-function addControl(row, file) {
-  if (isIdentifier(row[0])) {
-    return `<span class="add is-always" title="Included in every download"
-      aria-label="${esc(row[0])} is included in every download">✓</span>`;
-  }
-  if (!file.hasId) return `<span class="add is-none"></span>`;
-  const isIn = basket.has(file.name, row[0]);
-  return `<button class="add${isIn ? " is-in" : ""}" data-add="${esc(row[0])}"
-      data-add-file="${esc(file.name)}" aria-pressed="${isIn}"
-      title="${isIn ? "In your selection — click to remove" : "Add to your selection"}"
-      aria-label="${isIn ? "Remove" : "Add"} ${esc(row[0])}"
-      >${isIn ? '<span class="add-yes">✓</span><span class="add-no">✕</span>' : "＋"}</button>`;
+/* Why a row can't go in the selection, or "" if it can: the identifier is
+   in every download already, and a file without it can't be merged. */
+function cannotSelect(row, file) {
+  if (isIdentifier(row[0])) return "Included in every download";
+  if (!file.hasId) return `${file.name} has no ${state.manifest.identifier} column, so it cannot be merged`;
+  return "";
 }
 
+/* A row is a button that selects it — ＋ marks one that can be added, ✓ one
+   that is in — and beside it a ▸ that opens its details. */
 function rowHtml(row, i, q, keys) {
   const file = state.manifest.files[row[2]];
   const key = keyOf(row);
   const open = state.expanded.has(key);
+  const why = cannotSelect(row, file);
+  const isIn = !why && basket.has(file.name, row[0]);
+  const mark = isIn || isIdentifier(row[0]) ? "✓" : why ? "" : "＋";
   const tags = rowTopics(row).slice(0, 2).map(([t]) =>
     `<span class="topic-chip">${esc(state.topics[t].label)}</span>`).join("");
-  return `<li class="vrow${open ? " is-open" : ""}" data-key="${esc(key)}">
-    <div class="vrow-main">${addControl(row, file)}
-      <button class="vrow-btn" data-i="${i}" aria-expanded="${open}" draggable="true"
+  return `<li class="vrow${open ? " is-open" : ""}${isIn ? " is-in" : ""}${why ? " is-fixed" : ""}" data-key="${esc(key)}">
+    <div class="vrow-main">
+      <button class="vrow-btn" data-i="${i}" draggable="true"
+          ${why ? `aria-disabled="true" title="${esc(why)}"` : `aria-pressed="${isIn}"`}
           data-drag="${esc(JSON.stringify(rowPayload(row)))}">
+        <span class="v-check" aria-hidden="true">${mark}</span>
         <span class="v-name" title="${esc(row[0])}">${highlight(row[0], q)}</span>
         <span class="v-label" title="${esc(row[1] || "No label")}">${highlight(row[1] || "No label", q)}</span>
         <span class="v-wave" title="${esc(waveLabel(keys[row[3]]))}">${esc(keys[row[3]])}</span>
         <span class="v-file" title="${esc(file.description || file.name)}">${esc(file.name)}</span>
         <span class="v-topics">${tags}</span>
-        <span class="v-chev" aria-hidden="true">${open ? "▾" : "▸"}</span>
       </button>
+      <button class="v-expand" data-expand="${i}" aria-expanded="${open}"
+          ${open ? `aria-controls="more-${esc(key)}"` : ""}
+          aria-label="${open ? "Hide" : "Show"} details for ${esc(row[0])}"
+          title="${open ? "Hide" : "Show"} details">${open ? "▾" : "▸"}</button>
     </div>
     ${open ? `<div class="vrow-more" id="more-${esc(key)}">${moreHtml(row)}</div>` : ""}
   </li>`;
@@ -274,13 +276,32 @@ function moreHtml(row) {
       <button class="link-btn" data-file-open="${row[2]}">all in this file</button></div>`;
 }
 
+/* Redrawing a row replaces its buttons; a keyboard user stays where they were. */
+function refocus(key, selector, had) {
+  if (had) document.querySelector(`.vrow[data-key="${CSS.escape(key)}"] ${selector}`)
+    ?.focus({ preventScroll: true });
+}
+
 function toggleRow(row) {
   const key = keyOf(row);
+  const had = document.activeElement?.matches?.(".v-expand");
   if (state.expanded.has(key)) state.expanded.delete(key); else state.expanded.add(key);
   const li = document.querySelector(`.vrow[data-key="${CSS.escape(key)}"]`);
   const i = state.matches.indexOf(row);
   if (li) li.outerHTML = rowHtml(row, i, state.query.trim(), waveKeys());
   if (state.expanded.has(key)) fillMore(row);
+  refocus(key, ".v-expand", had);
+}
+
+/* Clicking a row puts it in the selection, or takes it out. The selection
+   redraws the list as it changes. */
+function selectRow(btn) {
+  if (btn.getAttribute("aria-disabled") === "true") return;
+  const row = state.matches[Number(btn.dataset.i)];
+  if (!row) return;
+  const had = document.activeElement === btn;
+  basket.toggle(rowPayload(row));
+  refocus(keyOf(row), ".vrow-btn", had);
 }
 
 /* Go to another variable: find it by its label, which brings the whole
@@ -338,13 +359,8 @@ export function wire() {
   });
 
   $("#results").addEventListener("click", (e) => {
-    const add = e.target.closest("[data-add]");
-    if (add) {
-      const row = state.matches.find((r) => r[0] === add.dataset.add &&
-        state.manifest.files[r[2]].name === add.dataset.addFile);
-      if (row) basket.toggle(rowPayload(row));
-      return;
-    }
+    const expand = e.target.closest("[data-expand]");
+    if (expand) { toggleRow(state.matches[Number(expand.dataset.expand)]); return; }
     const vals = e.target.closest("[data-values]");
     if (vals) {
       const key = vals.dataset.values;
@@ -362,7 +378,7 @@ export function wire() {
     if (file) { filterToFile(Number(file.dataset.fileOpen)); return; }
     if (e.target.closest("[data-clear-all]")) { clearAll(); return; }
     const btn = e.target.closest(".vrow-btn");
-    if (btn) toggleRow(state.matches[Number(btn.dataset.i)]);
+    if (btn) selectRow(btn);
   });
 
   $("#more").addEventListener("click", (e) => {

@@ -363,20 +363,22 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
 
 /* ── The variables ────────────────────────────────────────────────────
    Scanned, not read: one line each — name, label, sweep, file, topics —
-   with anything too long cut short and given in full on hover. The rest
-   opens in place. The header and every row share one set of columns. */
+   with anything too long cut short and given in full on hover. A click
+   selects the row; the rest opens in place from the ▸ at its end. The
+   header and every row share one set of columns. */
 
 .vtable { list-style: none; margin: 0; padding: 0 20px 8px; }
 /* Widths in px, not ch: the header and the rows are set in different fonts,
    and a ch is a different width in each. */
 .vhead, .vrow-btn {
   display: grid;
-  grid-template-columns: 136px minmax(0, 1fr) 52px minmax(0, 170px) minmax(0, 180px) 14px;
+  grid-template-columns: 20px 136px minmax(0, 1fr) 52px minmax(0, 170px) minmax(0, 180px);
   gap: 14px; align-items: baseline;
 }
+/* The header's last column sits over the ▸, outside the row's button. */
 .vhead {
-  grid-template-columns: 28px 136px minmax(0, 1fr) 52px minmax(0, 170px) minmax(0, 180px) 14px;
-  padding: 8px 4px 5px 0;
+  grid-template-columns: 20px 136px minmax(0, 1fr) 52px minmax(0, 170px) minmax(0, 180px) 28px;
+  padding: 8px 0 5px 10px;
   border-bottom: 1px solid var(--rule);
   font-family: var(--mono); font-size: 10px; color: var(--ink-3);
   text-transform: uppercase; letter-spacing: .1em;
@@ -384,14 +386,17 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
 /* Scrolled to, a row stops clear of the masthead and the filter bar. */
 .vrow { border-bottom: 1px solid var(--rule); scroll-margin-top: calc(var(--mast-h, 56px) + 80px); }
 .vrow:hover { background: var(--paper-2); }
-.vrow.is-open { background: var(--paper-2); box-shadow: inset 3px 0 0 var(--contour); }
+.vrow.is-open { background: var(--paper-2); }
+/* Selected: tinted, barred and ticked, so a scan down the list finds them. */
+.vrow.is-in {
+  background: color-mix(in srgb, var(--moss) 12%, transparent);
+  box-shadow: inset 3px 0 0 var(--moss);
+}
+.vrow.is-in:hover { background: color-mix(in srgb, var(--moss) 18%, transparent); }
 .vrow-main { display: flex; align-items: stretch; }
-.vrow:hover .add, .vrow .add:focus-visible { opacity: 1; }
-.vrow .add.is-none { cursor: default; }
-.vrow .add { width: 20px; height: 20px; }
 .vrow-btn {
   flex: 1; min-width: 0;
-  padding: 1px 4px 1px 10px; align-items: center;
+  padding: 1px 14px 1px 10px; align-items: center;
   border: 0; background: none; cursor: pointer; text-align: left;
   font: inherit; line-height: 18px;
 }
@@ -407,8 +412,26 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
 .v-file { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
 .v-topics { display: flex; gap: 4px; overflow: hidden; }
 .v-topics .topic-chip { font-size: 10.5px; line-height: 15px; }
-.v-chev { color: var(--ink-3); font-size: 11px; text-align: right; }
 .vrow-btn:hover .v-name { color: var(--contour); }
+.vrow-btn:focus-visible { outline: 2px solid var(--contour); outline-offset: -2px; }
+.vrow.is-fixed .vrow-btn { cursor: default; }
+.vrow.is-fixed .vrow-btn:hover .v-name { color: var(--ink); }
+/* ＋ quiet until the row is hovered; ✓ always plain. */
+.v-check {
+  font-family: var(--mono); font-size: 13px; text-align: center;
+  color: var(--ink-3); opacity: .45;
+}
+.vrow-btn:hover .v-check, .vrow-btn:focus-visible .v-check { opacity: 1; color: var(--contour); }
+.vrow.is-in .v-check { opacity: 1; color: var(--moss); font-weight: 700; }
+.vrow.is-fixed .v-check { opacity: 1; color: var(--ink-3); }
+.v-expand {
+  flex: 0 0 28px; padding: 0;
+  border: 0; border-radius: 2px; background: none; cursor: pointer;
+  font-size: 11px; color: var(--ink-3);
+}
+.v-expand:hover { color: var(--contour); background: var(--paper-3); }
+.v-expand:focus-visible { outline: 2px solid var(--contour); outline-offset: -2px; }
+.v-expand[aria-expanded="true"] { color: var(--contour); }
 
 /* Opened: a few lines, in order of what decides whether to use it. */
 .vrow-more {
@@ -939,18 +962,19 @@ body.is-dragging-var .view-tab[data-view="basket"] {
   .vtable { padding: 0 12px 8px; }
   .vhead { display: none; }
   .vrow-btn {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    grid-template-areas: "name wave chev" "label label label" "file file file" "topics topics topics";
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-areas: "check name wave" ". label label" ". file file" ". topics topics";
     gap: 2px 10px;
     padding-top: 8px; padding-bottom: 8px; line-height: 1.4;
   }
+  .v-check { grid-area: check; }
   .v-name { grid-area: name; }
   .v-label { grid-area: label; white-space: normal; font-size: 14px; }
   .v-file { grid-area: file; }
   .v-topics { flex-wrap: wrap; }
   .v-wave { grid-area: wave; }
   .v-topics { grid-area: topics; margin-top: 3px; }
-  .v-chev { grid-area: chev; }
+  .v-expand { align-self: flex-start; height: 36px; }
   .vrow-more { padding-left: 16px; }
 
   .view.is-current { grid-template-columns: 1fr; }
