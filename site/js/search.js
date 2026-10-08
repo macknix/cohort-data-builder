@@ -64,6 +64,7 @@ export function runSearch({ keepPlace = false } = {}) {
   if (!keepPlace) state.shown = PAGE;
 
   renderResults();
+  if (!keepPlace) $("#vscroll").scrollTop = 0;
   renderSpine();
   renderLevelSelect();
   topics.renderGrid();
@@ -305,6 +306,7 @@ export function filterToFile(fileIdx) {
   state.query = "";
   $("#q").value = "";
   runSearch();
+  // On a phone the list scrolls with the page; bring it up to the filter bar.
   $("#filterbar").scrollIntoView({ block: "start" });
 }
 

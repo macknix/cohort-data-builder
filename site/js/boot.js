@@ -164,8 +164,8 @@ function wireGrips() {
   });
 }
 
-/* The filter bar sticks just under the masthead, whose height depends on how
-   its contents wrap; measured rather than guessed. */
+/* A row scrolled to on the long page stops clear of the masthead, whose
+   height depends on how its contents wrap; measured rather than guessed. */
 function trackMastheadHeight() {
   const mast = $(".masthead");
   const set = () => document.documentElement.style.setProperty("--mast-h", `${mast.offsetHeight}px`);
