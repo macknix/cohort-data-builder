@@ -130,9 +130,10 @@ function rowHtml(row, i, q, keys) {
     <div class="vrow-main">${addControl(row, file)}
       <button class="vrow-btn" data-i="${i}" aria-expanded="${open}" draggable="true"
           data-drag="${esc(JSON.stringify(rowPayload(row)))}">
-        <span class="v-name">${highlight(row[0], q)}</span>
-        <span class="v-label">${highlight(row[1] || "No label", q)}</span>
+        <span class="v-name" title="${esc(row[0])}">${highlight(row[0], q)}</span>
+        <span class="v-label" title="${esc(row[1] || "No label")}">${highlight(row[1] || "No label", q)}</span>
         <span class="v-wave" title="${esc(waveLabel(keys[row[3]]))}">${esc(keys[row[3]])}</span>
+        <span class="v-file" title="${esc(file.description || file.name)}">${esc(file.name)}</span>
         <span class="v-topics">${tags}</span>
         <span class="v-chev" aria-hidden="true">${open ? "▾" : "▸"}</span>
       </button>
@@ -153,7 +154,7 @@ export function renderResults() {
   } else {
     $("#results").innerHTML =
       `<li class="vhead" aria-hidden="true"><span></span><span>Variable</span><span>Label</span>
-         <span>${esc(state.manifest.wave.term)}</span><span>Topics</span><span></span></li>` +
+         <span>${esc(state.manifest.wave.term)}</span><span>File</span><span>Topics</span><span></span></li>` +
       shown.map((row, i) => rowHtml(row, i, q, keys)).join("");
   }
   const more = $("#more");
