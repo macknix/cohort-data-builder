@@ -346,6 +346,8 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
 .fb-end { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 #level { width: auto; padding: 6px 8px; font-size: 12px; }
 .fb-count { font-family: var(--mono); font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+.fb-say { font-size: 12px; color: var(--moss); white-space: nowrap; }
+.fb-say:empty { display: none; }
 .match-mode {
   display: inline-flex; align-items: center; gap: 2px;
   font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);

@@ -75,6 +75,7 @@ async function openDataset(key) {
     ]);
     state.manifest = manifest;
     state.vars = vars;
+    state.anchor = null;   // a range never starts in another dataset
   } catch (err) {
     fail(`Could not load the ${key} data: ${err.message}`);
     return;

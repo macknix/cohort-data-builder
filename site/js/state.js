@@ -26,6 +26,7 @@ export const state = {
   matches: [],
   shown: 200,        // rows drawn; "show more" raises it
   expanded: new Set(),   // rows opened in place, by "<fileIndex>:<name>"
+  anchor: null,          // the row last clicked, by the same key: where a Shift-click range starts
   allValues: new Set(),  // opened rows showing every value label
   labelIndex: new Map(), // normalised label -> rows, for "same label"
   // What the download will contain, in the order it was picked:
