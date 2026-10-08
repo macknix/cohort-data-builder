@@ -8,6 +8,7 @@ import { indexTopics, state, storeKey } from "./state.js";
 import { switchView } from "./views.js";
 import * as search from "./search.js";
 import * as basket from "./basket.js";
+import * as panel from "./panel.js";
 
 async function getJson(url) {
   const res = await fetch(url);
@@ -185,7 +186,11 @@ function wire() {
   search.wire();
   search.onOptions(basket.saveOptions);
   basket.wire();
-  basket.onChange(() => { if (state.view === "search") search.runSearch({ keepPlace: true }); });
+  panel.wire();
+  basket.onChange(() => {
+    panel.render();
+    if (state.view === "search") search.refreshSelection();
+  });
   basket.onOpenFile((name) => {
     const i = state.manifest.files.findIndex((f) => f.name === name);
     if (i >= 0) search.filterToFile(i);

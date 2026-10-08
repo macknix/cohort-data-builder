@@ -510,12 +510,119 @@ main { display: block; }
   .view[data-view="search"].is-current {
     display: flex; flex-direction: column; height: 100%;
   }
-  .vscroll { flex: 1 1 0; min-height: 320px; overflow-y: auto; }
+  /* The list and the selection panel side by side, sharing what is left.
+     Their minimum is what tips the page back into scrolling. */
+  .vwork { flex: 1 1 0; min-height: 380px; display: flex; }
+  .vmain {
+    flex: 1 1 0; min-width: 0; min-height: 0; display: flex; flex-direction: column;
+    container-type: inline-size;
+  }
+  .vscroll { flex: 1 1 0; min-height: 0; overflow-y: auto; }
   .vhead { position: sticky; top: 0; z-index: 1; background: var(--paper); }
   /* Scrolled to, a row stops clear of the column header. */
   .vscroll .vrow { scroll-margin-top: 34px; }
 }
 .vscroll:focus-visible { outline: 2px solid var(--contour); outline-offset: -2px; }
+
+/* With the selection panel beside it the list is narrower: the fixed columns
+   give way first, so the label keeps room to be read. */
+@container (max-width: 1000px) {
+  .vrow-btn { grid-template-columns: 20px 120px minmax(0, 1fr) 44px minmax(0, 120px) minmax(0, 140px); }
+  .vhead { grid-template-columns: 20px 120px minmax(0, 1fr) 44px minmax(0, 120px) minmax(0, 140px) 28px; }
+}
+@container (max-width: 800px) {
+  .vrow-btn { grid-template-columns: 20px 112px minmax(0, 1fr) 44px minmax(0, 130px); }
+  .vhead { grid-template-columns: 20px 112px minmax(0, 1fr) 44px minmax(0, 130px) 28px; }
+  .vtable .v-file { display: none; }
+}
+@container (max-width: 620px) {
+  .vrow-btn { grid-template-columns: 20px 112px minmax(0, 1fr) 44px; }
+  .vhead { grid-template-columns: 20px 112px minmax(0, 1fr) 44px 28px; }
+  .vtable .v-topics { display: none; }
+}
+
+/* ── The selection panel ──────────────────────────────────────────────
+   Always there on a wide screen; on a mid-width one, opened from the
+   "Selected (N)" button in the filter bar; on a phone, the Selection tab
+   does the job. */
+
+.spanel { display: none; }
+.sp-toggle { display: none; }
+@media (min-width: 901px) {
+  .spanel {
+    flex: 0 0 320px; min-height: 0;
+    flex-direction: column;
+    border-left: 1px solid var(--rule);
+    background: var(--paper-2);
+  }
+  .vwork.is-panel-open .spanel { display: flex; }
+  .sp-toggle { display: inline; }
+  .vwork.is-panel-open .sp-toggle { font-weight: 700; }
+}
+@media (min-width: 1280px) {
+  .spanel { display: flex; }
+  .sp-toggle { display: none; }
+}
+.sp-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  padding: 12px 14px 8px;
+}
+.sp-count { margin: 0; font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.sp-count strong { color: var(--ink); }
+.sp-tools { display: flex; gap: 8px; align-items: center; padding: 0 14px 8px; }
+.sp-tools input { padding: 5px 8px; font-size: 12px; }
+.sp-group { display: inline-flex; flex: none; }
+.sp-group button {
+  padding: 4px 7px; border: 1px solid var(--rule); background: var(--paper); cursor: pointer;
+  font-family: var(--mono); font-size: 10.5px; color: var(--ink-2);
+}
+.sp-group button + button { border-left: 0; }
+.sp-group button[aria-pressed="true"] { color: var(--contour); border-color: var(--contour); font-weight: 700; }
+.sp-group button[aria-pressed="true"] + button { border-left: 1px solid var(--contour); }
+.sp-warn {
+  margin: 0 14px 8px; padding: 5px 8px;
+  background: color-mix(in srgb, var(--ochre) 12%, transparent);
+  font-size: 12px; color: var(--ochre);
+}
+.sp-list {
+  flex: 1 1 0; min-height: 0; overflow-y: auto;
+  border-top: 1px solid var(--rule);
+}
+.sp-list:focus-visible { outline: 2px solid var(--contour); outline-offset: -2px; }
+.sp-empty { margin: 0; padding: 16px 14px; font-size: 13px; color: var(--ink-3); }
+.sp-grp-head {
+  position: sticky; top: 0; z-index: 1;
+  display: flex; align-items: baseline; gap: 6px; width: 100%;
+  padding: 5px 14px; border: 0; border-bottom: 1px solid var(--rule);
+  background: var(--paper-3); cursor: pointer; text-align: left;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-2);
+}
+.sp-grp-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-grp-n { color: var(--ink-3); }
+.sp-caret { font-size: 9px; color: var(--ink-3); }
+.sp-rows { list-style: none; margin: 0; padding: 0; }
+.sp-row {
+  display: grid; grid-template-columns: 92px minmax(0, 1fr) minmax(0, 64px) 20px;
+  gap: 8px; align-items: center;
+  padding: 1px 6px 1px 14px; line-height: 20px;
+  border-bottom: 1px solid var(--rule);
+}
+.sp-row:hover { background: var(--paper); }
+.sp-row.is-bad { background: color-mix(in srgb, var(--ochre) 9%, transparent); }
+.sp-name, .sp-label, .sp-meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-name { font-family: var(--mono); font-size: 12px; font-weight: 700; }
+.sp-flag { margin-right: 3px; color: var(--ochre); font-weight: 400; }
+.sp-label { font-size: 12.5px; color: var(--ink-2); }
+.sp-meta { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); text-align: right; }
+.sp-x {
+  width: 20px; height: 20px; padding: 0;
+  border: 1px solid transparent; border-radius: 2px; background: none; cursor: pointer;
+  font-size: 11px; color: var(--ink-3);
+}
+.sp-x:hover, .sp-x:focus-visible { color: var(--contour); border-color: var(--contour); }
+.sp-all { display: block; padding: 6px 14px; }
+.sp-foot { padding: 10px 14px; border-top: 1px solid var(--rule); }
+.sp-foot .btn { width: 100%; }
 
 /* ── The pane divider ─────────────────────────────────────────────────
 
