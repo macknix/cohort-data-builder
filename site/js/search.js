@@ -26,6 +26,7 @@ const PAGE = 200;               // rows drawn at a time; "show more" draws the n
 const VALUES_SHOWN = 8;         // value labels before "+ N more"
 const ALSO_MAX = 10;            // other sweeps listed under "Also asked at"
 const ALSO_GROUP_MAX = 40;      // a label shared this widely is boilerplate, not a question
+const SELECT_ALL_MAX = 500;     // beyond this "select all" is a mistake, not a shortcut
 
 const keyOf = (row) => `${row[2]}:${row[0]}`;
 
@@ -100,6 +101,40 @@ function renderFilters() {
   $("#clear-filters").hidden = !(chips.length || state.query || state.levelFilter !== null);
   const n = state.matches.length;
   $("#result-count").textContent = `${n.toLocaleString()} variable${n === 1 ? "" : "s"}`;
+  renderSelectAll();
+}
+
+/* Every selectable result, in or out at once, for a list short enough that
+   wanting all of it is plausible. */
+const selectableMatches = () =>
+  state.matches.filter((r) => !cannotSelect(r, state.manifest.files[r[2]]));
+
+function renderSelectAll() {
+  const btn = $("#select-all");
+  const rows = selectableMatches();
+  btn.hidden = !rows.length || rows.length > SELECT_ALL_MAX;
+  if (btn.hidden) return;
+  const allIn = rows.every((r) => basket.has(state.manifest.files[r[2]].name, r[0]));
+  btn.dataset.mode = allIn ? "remove" : "add";
+  btn.textContent = `${allIn ? "Remove" : "Select"} all ${rows.length.toLocaleString()}`;
+}
+
+function selectAll() {
+  const items = selectableMatches().map(rowPayload);
+  const n = $("#select-all").dataset.mode === "remove"
+    ? -basket.removeMany(items) : basket.addMany(items);
+  sayCount(n);
+}
+
+/* Said quietly beside the count, and to a screen reader, when one click
+   changed more than one row. */
+let sayTimer;
+function sayCount(n) {
+  const el = $("#select-status");
+  const m = Math.abs(n);
+  el.textContent = n ? `${n > 0 ? "Added" : "Removed"} ${m.toLocaleString()} variable${m === 1 ? "" : "s"}` : "";
+  clearTimeout(sayTimer);
+  sayTimer = setTimeout(() => { el.textContent = ""; }, 5000);
 }
 
 /* ── The list ────────────────────────────────────────────────────────── */
@@ -126,7 +161,8 @@ function rowHtml(row, i, q, keys) {
   return `<li class="vrow${open ? " is-open" : ""}${isIn ? " is-in" : ""}${why ? " is-fixed" : ""}" data-key="${esc(key)}">
     <div class="vrow-main">
       <button class="vrow-btn" data-i="${i}" draggable="true"
-          ${why ? `aria-disabled="true" title="${esc(why)}"` : `aria-pressed="${isIn}"`}
+          ${why ? `aria-disabled="true" title="${esc(why)}"`
+                : `aria-pressed="${isIn}" title="Click to ${isIn ? "remove" : "select"} · Shift-click for a range"`}
           data-drag="${esc(JSON.stringify(rowPayload(row)))}">
         <span class="v-check" aria-hidden="true">${mark}</span>
         <span class="v-name" title="${esc(row[0])}">${highlight(row[0], q)}</span>
@@ -293,15 +329,30 @@ function toggleRow(row) {
   refocus(key, ".v-expand", had);
 }
 
-/* Clicking a row puts it in the selection, or takes it out. The selection
+/* Clicking a row puts it in the selection, or takes it out; Cmd- or
+   Ctrl-click does the same, since a click never clears the others. A
+   Shift-click carries every row between it and the last row clicked in the
+   current list the way the clicked row would go — in, or out. The selection
    redraws the list as it changes. */
-function selectRow(btn) {
-  if (btn.getAttribute("aria-disabled") === "true") return;
-  const row = state.matches[Number(btn.dataset.i)];
+function selectRow(btn, e) {
+  const to = Number(btn.dataset.i);
+  const row = state.matches[to];
   if (!row) return;
+  const key = keyOf(row);
   const had = document.activeElement === btn;
-  basket.toggle(rowPayload(row));
-  refocus(keyOf(row), ".vrow-btn", had);
+  const from = e.shiftKey && state.anchor !== null
+    ? state.matches.findIndex((r) => keyOf(r) === state.anchor) : -1;
+  state.anchor = key;
+  if (from >= 0 && from !== to) {
+    window.getSelection()?.removeAllRanges();   // a Shift-click also extends the text selection
+    const range = state.matches.slice(Math.min(from, to), Math.max(from, to) + 1)
+      .filter((r) => !cannotSelect(r, state.manifest.files[r[2]])).map(rowPayload);
+    const adding = !basket.has(rowPayload(row).file, row[0]);
+    sayCount(adding ? basket.addMany(range) : -basket.removeMany(range));
+  } else if (btn.getAttribute("aria-disabled") !== "true") {
+    basket.toggle(rowPayload(row));
+  }
+  refocus(key, ".vrow-btn", had);
 }
 
 /* Go to another variable: find it by its label, which brings the whole
@@ -378,7 +429,7 @@ export function wire() {
     if (file) { filterToFile(Number(file.dataset.fileOpen)); return; }
     if (e.target.closest("[data-clear-all]")) { clearAll(); return; }
     const btn = e.target.closest(".vrow-btn");
-    if (btn) selectRow(btn);
+    if (btn) selectRow(btn, e);
   });
 
   $("#more").addEventListener("click", (e) => {
@@ -408,4 +459,5 @@ export function wire() {
     runSearch();
   });
   $("#clear-filters").addEventListener("click", clearAll);
+  $("#select-all").addEventListener("click", selectAll);
 }

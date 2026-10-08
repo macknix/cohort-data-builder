@@ -51,27 +51,49 @@ function taken(except) {
 
 /* ── Adding and removing ─────────────────────────────────────────────── */
 
-export function add({ name, label, file, wave }) {
-  if (!name || !file || has(file, name)) return false;
-  if (isIdentifier(name)) {
-    say(`${name} is already in every download: it is what the files are merged on.`);
-    return false;
-  }
+/* Put one variable in the bundle without saving or redrawing. Returns why it
+   could not go in, "" if it went in, or null if it was already there. */
+function put({ name, label, file, wave }) {
+  if (!name || !file || has(file, name)) return null;
+  if (isIdentifier(name)) return `${name} is already in every download: it is what the files are merged on.`;
   const known = state.manifest.files.find((f) => f.name === file);
-  if (!known) return false;
-  if (!known.hasId) {
-    say(`${file} has no ${state.manifest.identifier} column, so it cannot be merged.`);
-    return false;
-  }
+  if (!known) return `${file} is not in this dataset.`;
+  if (!known.hasId) return `${file} has no ${state.manifest.identifier} column, so it cannot be merged.`;
   state.bundle.push({ name, label: label || "", file, wave: wave || known.wave,
                       column: defaultColumn(name, wave || known.wave, taken()) });
+  return "";
+}
+
+export function add(item) {
+  const why = put(item);
+  if (why) say(why);
+  if (why !== "") return false;
   save(); render();
   return true;
+}
+
+/* Many at once, saved and redrawn once: a range or a whole result list.
+   Returns how many went in. */
+export function addMany(items) {
+  let added = 0;
+  for (const item of items) if (put(item) === "") added++;
+  if (added) { save(); render(); }
+  return added;
 }
 
 export function remove(key) {
   state.bundle = state.bundle.filter((b) => keyOf(b) !== key);
   save(); render();
+}
+
+/* Returns how many came out. */
+export function removeMany(items) {
+  const keys = new Set(items.map(keyOf));
+  const before = state.bundle.length;
+  state.bundle = state.bundle.filter((b) => !keys.has(keyOf(b)));
+  const removed = before - state.bundle.length;
+  if (removed) { save(); render(); }
+  return removed;
 }
 
 export function toggle(item) {
