@@ -23,6 +23,9 @@
   --ochre:    #9a6410;
   --moss:     #2c6b50;
   --sea:      #2a5c8a;
+  /* Topic areas (see "Topic areas" below): light steps. */
+  --d-education: #2a78d6;  --d-employment: #eda100;
+  --d-mental:    #e87ba4;  --d-physical:   #008300;
 
   --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
   --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
@@ -46,6 +49,9 @@
     --moss:    #6cc198;
     --sea:     #82b8e8;
     --shadow:  0 1px 0 rgba(0, 0, 0, .3), 0 2px 12px -6px rgba(0, 0, 0, .7);
+    /* Topic areas: the same four hues, stepped for the dark surface. */
+    --d-education: #3987e5;  --d-employment: #c98500;
+    --d-mental:    #d55181;  --d-physical:   #008300;
   }
 }
 
@@ -55,6 +61,8 @@
   --rule:    #2b353d;  --contour: #e879b8;  --ochre:   #d9a145;
   --moss:    #6cc198;  --sea:     #82b8e8;
   --shadow:  0 1px 0 rgba(0, 0, 0, .3), 0 2px 12px -6px rgba(0, 0, 0, .7);
+  --d-education: #3987e5;  --d-employment: #c98500;
+  --d-mental:    #d55181;  --d-physical:   #008300;
 }
 :root[data-theme="light"] {
   --paper:   #e9ece7;  --paper-2: #f5f7f3;  --paper-3: #dfe3dc;
@@ -62,6 +70,8 @@
   --rule:    #c5ccc3;  --contour: #8e2f6b;  --ochre:   #9a6410;
   --moss:    #2c6b50;  --sea:     #2a5c8a;
   --shadow:  0 1px 0 rgba(19, 26, 34, .04), 0 2px 10px -6px rgba(19, 26, 34, .18);
+  --d-education: #2a78d6;  --d-employment: #eda100;
+  --d-mental:    #e87ba4;  --d-physical:   #008300;
 }
 
 * { box-sizing: border-box; }
@@ -999,8 +1009,29 @@ body.is-dragging-var .view-tab[data-view="basket"] {
   font-family: var(--mono); font-size: 11px; color: var(--ochre);
 }
 
+/* ── Topic areas ──────────────────────────────────────────────────────
+   The four commonest areas each have a colour; the other eleven stay
+   neutral. Four is as many as stay distinguishable pair by pair, for
+   colour-blind readers too, since any two can sit in adjacent rows (checked
+   with the OKLab ΔE validator in both themes). Colour is never the only
+   cue: a chip always names its topic, and its tooltip the area. It marks,
+   never text: labels stay in ink. A row is striped by its strongest topic's
+   area, on the name rather than the row's edge, which is the selection's. */
+
+[data-domain="education"]         { --dom: var(--d-education); }
+[data-domain="employment_income"] { --dom: var(--d-employment); }
+[data-domain="mental_health"]     { --dom: var(--d-mental); }
+[data-domain="physical_health"]   { --dom: var(--d-physical); }
+.vrow .v-name { box-shadow: inset 3px 0 0 var(--dom, transparent); padding-left: 7px; }
+.vhead span:nth-child(2) { padding-left: 7px; }
+.topic-chip, .vm-topic { box-shadow: inset 3px 0 0 var(--dom, transparent); }
+.dom-swatch {
+  display: inline-block; flex: none; width: 9px; height: 9px; margin-right: 6px; border-radius: 2px;
+  background: var(--dom, transparent); vertical-align: baseline;
+}
+
 .topic-chip {
-  display: inline-block; padding: 0 6px;
+  display: inline-block; padding: 0 6px 0 8px;
   border: 1px solid var(--rule); border-radius: 2px;
   font-family: var(--sans); font-size: 11px; line-height: 1.6; color: var(--ink-2);
   white-space: nowrap;

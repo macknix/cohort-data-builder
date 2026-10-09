@@ -129,7 +129,8 @@ function row(kind, i, counts, allMax, expanded) {
     : "";
   return `<div class="ov-row tg-row${kind === "t" ? " is-topic" : ""}${on ? " is-on" : ""}${partly ? " is-part" : ""}">
     <div class="ov-label">${chevron}<button class="tg-name" data-row="${kind}:${i}" aria-pressed="${on}"
-        title="${esc(desc || "")}"><span class="tg-box" aria-hidden="true"></span><span class="tg-text">${esc(label)}</span></button>
+        title="${esc(desc || "")}"><span class="tg-box" aria-hidden="true"></span>${kind === "d"
+        ? `<span class="dom-swatch" data-domain="${esc(state.domains[i].id)}" aria-hidden="true"></span>` : ""}<span class="tg-text">${esc(label)}</span></button>
       <span class="ov-count">${total ? total.toLocaleString() : "—"}</span></div>
     <div class="tg-cells">${cells}</div></div>`;
 }
