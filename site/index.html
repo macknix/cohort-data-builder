@@ -49,14 +49,6 @@
     <section class="overview" id="overview" aria-label="What the study holds">
       <div class="ov-head">
         <p class="ov-about" id="ov-about"></p>
-        <div class="ov-tools" id="ov-tools" hidden>
-          <label>tags ≥ <select id="min-conf" aria-label="Minimum topic confidence">
-            <option value="30">30%</option><option value="50">50%</option>
-            <option value="70">70%</option><option value="90">90%</option></select></label>
-          <label id="shade-control">shade <select id="shade" aria-label="How the topic rows are shaded">
-            <option value="row" title="Each row against its own busiest sweep">within topic</option>
-            <option value="abs" title="Every cell on one scale">across topics</option></select></label>
-        </div>
       </div>
 
       <div class="ov-chart" id="ov-chart">
@@ -73,6 +65,19 @@
           <button class="ov-toggle" id="tgrid-toggle" aria-expanded="false" aria-controls="tgrid-body">
             <span class="tg-caret">▸</span> Topics
             <span class="ov-hint">click a topic to filter · ▸ to see inside · counts are variables, not questions</span></button>
+          <!-- Settings for the topics, shown only while they are: the tag
+               threshold is rarely changed, so it stays out of the way. -->
+          <div class="tg-tools" id="tg-tools" hidden>
+            <label title="Only show topic tags with at least this confidence">Topic tags ≥
+              <select id="min-conf" aria-label="Minimum topic confidence" aria-describedby="min-conf-help">
+                <option value="30">30%</option><option value="50">50%</option>
+                <option value="70">70%</option><option value="90">90%</option></select></label>
+            <label>Shade <select id="shade" aria-label="How the topic rows are shaded">
+              <option value="row" title="Each row against its own busiest sweep">within topic</option>
+              <option value="abs" title="Every cell on one scale">across topics</option></select></label>
+            <p class="tg-help" id="min-conf-help">Only show topic tags with at least this confidence.
+              It sets the tags on each variable, the topic counts and the topic filter.</p>
+          </div>
           <div class="tgrid-body" id="tgrid-body" hidden></div>
         </div>
       </div>

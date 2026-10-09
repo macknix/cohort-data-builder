@@ -139,14 +139,14 @@ export function renderGrid() {
   const section = $("#tgrid");
   const has = state.domains.length > 0;
   section.hidden = !has;
-  $("#ov-tools").hidden = !has;
   if (!has) return;
 
   $("#min-conf").value = String(state.options.minConf);
   $("#shade").value = state.options.gridShade;
   const open = state.options.gridOpen;
-  // Shading only means anything while the topic rows are showing.
-  $("#shade-control").hidden = !open;
+  // The tag threshold and the shading sit with the topic rows, out of the
+  // way until they are opened.
+  $("#tg-tools").hidden = !open;
   $("#tgrid-toggle").setAttribute("aria-expanded", String(open));
   $("#tgrid-toggle .tg-caret").textContent = open ? "▾" : "▸";
   const body = $("#tgrid-body");
