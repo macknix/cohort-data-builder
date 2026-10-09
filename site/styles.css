@@ -219,11 +219,13 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
 }
 .ov-about { margin: 0; max-width: 95ch; font-size: 13px; color: var(--ink-2); }
 .ov-about strong { color: var(--ink); font-weight: 600; }
-.ov-tools {
-  display: flex; gap: 14px;
+.tg-tools {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px;
+  padding: 4px 0 8px;
   font-family: var(--mono); font-size: 10.5px; color: var(--ink-3);
 }
-.ov-tools select { width: auto; padding: 2px 4px; font-size: 11px; }
+.tg-tools select { width: auto; padding: 2px 4px; font-size: 11px; }
+.tg-help { flex-basis: 100%; margin: 0; font-family: var(--sans); font-size: 12px; }
 
 .ov-row {
   display: grid; grid-template-columns: var(--grid-label) minmax(0, 1fr);
