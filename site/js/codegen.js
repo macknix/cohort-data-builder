@@ -43,8 +43,11 @@ function pySelection(groups) {
     "\n    },").join("\n");
 }
 
+// Columns with codes to replace: some carry only codes kept as answers.
+const hasCodes = (n) => n && (n.values.length || n.ranges.length);
+
 function rCodes(bundle, na) {
-  return bundle.filter((b) => na.get(b)).map((b) => {
+  return bundle.filter((b) => hasCodes(na.get(b))).map((b) => {
     const { values, ranges } = na.get(b);
     const v = values.length ? `c(${values.map(num).join(", ")})` : "numeric(0)";
     const r = ranges.map(([lo, hi]) =>
@@ -54,7 +57,7 @@ function rCodes(bundle, na) {
 }
 
 function pyCodes(bundle, na) {
-  return bundle.filter((b) => na.get(b)).map((b) => {
+  return bundle.filter((b) => hasCodes(na.get(b))).map((b) => {
     const { values, ranges } = na.get(b);
     const r = ranges.map(([lo, hi]) =>
       `[${lo === null ? "None" : num(lo)}, ${hi === null ? "None" : num(hi)}]`).join(", ");
@@ -115,13 +118,17 @@ const csvCell = (s) => {
 };
 
 function codebook(bundle, entries, na, identifier, topicLabels) {
-  const rows = [["column", "variable", "file", "wave", "label", "missing_codes", "value_labels", "topics"]];
-  rows.push([identifier, identifier, "", "", "Identifier: every file is merged on this", "", "", ""]);
+  // negative_kept: negative codes that are answers, not missing, so never
+  // replaced ("-1=Dislike").
+  const rows = [["column", "variable", "file", "wave", "label", "missing_codes", "negative_kept",
+                 "value_labels", "topics"]];
+  rows.push([identifier, identifier, "", "", "Identifier: every file is merged on this", "", "", "", ""]);
   for (const b of bundle) {
     const entry = entries.get(b);
     rows.push([
       b.column, b.name, b.file, b.wave, entry?.label || b.label,
       describeNa(na.get(b)),
+      (na.get(b)?.kept || []).map(([x, l]) => `${x}=${l}`).join("; "),
       (entry?.values || []).map((v) => `${v.value}=${v.label}`).join("; "),
       (entry?.topics || []).map(([id, c]) => `${topicLabels.get(id) || id} (${c.toFixed(2)})`).join("; "),
     ]);
@@ -211,9 +218,11 @@ export async function build(bundle, manifest, templates, options) {
       : `The merge is written in ${languages[0] === "r" ? "R" : "Python"}.`,
     missing_note: missingToNa
       ? "**Missing-value codes are converted to NA.** Each variable's declared missing " +
-        "codes, and any negative code with a value label, are replaced with NA — " +
-        "`codebook.csv` lists exactly which. Set `MISSING_TO_NA` to false at the top " +
-        "of the merge script to keep them."
+        "codes, and any other negative code labelled as missing (\"Not known\", " +
+        "\"Refused\"…), are replaced with NA — `codebook.csv` lists exactly which. A " +
+        "negative code with any other label is a real answer and is kept (its " +
+        "`negative_kept` column). Set `MISSING_TO_NA` to false at the top of the merge " +
+        "script to keep them all."
       : "**Missing-value codes are kept as deposited.** Set `MISSING_TO_NA` to true at " +
         "the top of the merge script to replace them with NA — `codebook.csv` lists " +
         "which codes that would replace.",

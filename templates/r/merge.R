@@ -33,7 +33,7 @@ SELECTION <- list(
 
 # The codes MISSING_TO_NA replaces, per output column: single values, and
 # ranges as c(low, high) where NA is an open end. Taken from the data
-# dictionary: the declared missing values plus any labelled negative code.
+# dictionary: the declared missing values plus any negative code labelled as missing.
 MISSING_CODES <- list(
 {{missing_codes}}
 )
