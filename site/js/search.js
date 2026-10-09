@@ -29,6 +29,7 @@ const ALSO_GROUP_MAX = 40;      // a label shared this widely is boilerplate, no
 const SELECT_ALL_MAX = 500;     // beyond this "select all" is a mistake, not a shortcut
 
 const keyOf = (row) => `${row[2]}:${row[0]}`;
+const areaOf = (t) => state.domains[state.topics[t].domain];
 
 /* ── Searching ───────────────────────────────────────────────────────── */
 
@@ -162,9 +163,13 @@ function rowHtml(row, i, q, keys) {
   const why = cannotSelect(row, file);
   const isIn = !why && basket.has(file.name, row[0]);
   const mark = isIn || isIdentifier(row[0]) ? "✓" : why ? "" : "＋";
-  const tags = rowTopics(row).slice(0, 2).map(([t]) =>
-    `<span class="topic-chip">${esc(state.topics[t].label)}</span>`).join("");
-  return `<li class="vrow${open ? " is-open" : ""}${isIn ? " is-in" : ""}${why ? " is-fixed" : ""}" data-key="${esc(key)}">
+  const ts = rowTopics(row);
+  const tags = ts.slice(0, 2).map(([t]) =>
+    `<span class="topic-chip" data-domain="${esc(areaOf(t).id)}"
+       title="${esc(areaOf(t).label)} › ${esc(state.topics[t].label)}">${esc(state.topics[t].label)}</span>`).join("");
+  // Striped by its strongest topic's area: topics come strongest first.
+  const area = ts.length ? ` data-domain="${esc(areaOf(ts[0][0]).id)}"` : "";
+  return `<li class="vrow${open ? " is-open" : ""}${isIn ? " is-in" : ""}${why ? " is-fixed" : ""}" data-key="${esc(key)}"${area}>
     <div class="vrow-main">
       <button class="vrow-btn" data-i="${i}" draggable="true"
           ${why ? `aria-disabled="true" title="${esc(why)}"`
@@ -299,7 +304,7 @@ function moreHtml(row) {
     const i = byId.get(id);
     const pct = Math.round(c * 100);
     return `<button class="vm-topic${pct < state.options.minConf ? " is-below" : ""}" data-topic-open="${i}"
-        title="${esc(state.domains[state.topics[i].domain].label)} · filter by this topic">
+        data-domain="${esc(areaOf(i).id)}" title="${esc(areaOf(i).label)} › ${esc(state.topics[i].label)} · filter by this topic">
         ${esc(state.topics[i].label)} <span class="vm-pct">${pct}%</span></button>`;
   }).join("");
   const facts = [

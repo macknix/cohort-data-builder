@@ -23,6 +23,12 @@
   --ochre:    #9a6410;
   --moss:     #2c6b50;
   --sea:      #2a5c8a;
+  /* Topic areas (see "Topic areas" below): light steps. */
+  --d-demographics: #b54467;  --d-housing-environment: #06b995;  --d-physical-health: #18883a;
+  --d-mental-health: #a8488d;  --d-health-care: #c27fdd;  --d-health-behaviour: #8bad35;
+  --d-family-social: #755dc0;  --d-education: #0277ba;  --d-employment-income: #d1900b;
+  --d-attitudes: #827200;  --d-child-development: #7699fb;  --d-life-events: #af5504;
+  --d-omics: #12b0d4;  --d-pregnancy: #ed7668;  --d-administration: #128283;
 
   --mono: ui-monospace, "SF Mono", SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
   --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
@@ -46,6 +52,12 @@
     --moss:    #6cc198;
     --sea:     #82b8e8;
     --shadow:  0 1px 0 rgba(0, 0, 0, .3), 0 2px 12px -6px rgba(0, 0, 0, .7);
+    /* Topic areas: the same hues, stepped for the dark surface. */
+    --d-demographics: #b54b6b;  --d-housing-environment: #00ae8c;  --d-physical-health: #298a41;
+    --d-mental-health: #a84f8e;  --d-health-care: #b678cf;  --d-health-behaviour: #83a336;
+    --d-family-social: #7862bf;  --d-education: #0b7bbd;  --d-employment-income: #c68704;
+    --d-attitudes: #857505;  --d-child-development: #7090eb;  --d-life-events: #b2580b;
+    --d-omics: #0ea6c8;  --d-pregnancy: #de7063;  --d-administration: #028587;
   }
 }
 
@@ -55,6 +67,11 @@
   --rule:    #2b353d;  --contour: #e879b8;  --ochre:   #d9a145;
   --moss:    #6cc198;  --sea:     #82b8e8;
   --shadow:  0 1px 0 rgba(0, 0, 0, .3), 0 2px 12px -6px rgba(0, 0, 0, .7);
+  --d-demographics: #b54b6b;  --d-housing-environment: #00ae8c;  --d-physical-health: #298a41;
+  --d-mental-health: #a84f8e;  --d-health-care: #b678cf;  --d-health-behaviour: #83a336;
+  --d-family-social: #7862bf;  --d-education: #0b7bbd;  --d-employment-income: #c68704;
+  --d-attitudes: #857505;  --d-child-development: #7090eb;  --d-life-events: #b2580b;
+  --d-omics: #0ea6c8;  --d-pregnancy: #de7063;  --d-administration: #028587;
 }
 :root[data-theme="light"] {
   --paper:   #e9ece7;  --paper-2: #f5f7f3;  --paper-3: #dfe3dc;
@@ -62,6 +79,11 @@
   --rule:    #c5ccc3;  --contour: #8e2f6b;  --ochre:   #9a6410;
   --moss:    #2c6b50;  --sea:     #2a5c8a;
   --shadow:  0 1px 0 rgba(19, 26, 34, .04), 0 2px 10px -6px rgba(19, 26, 34, .18);
+  --d-demographics: #b54467;  --d-housing-environment: #06b995;  --d-physical-health: #18883a;
+  --d-mental-health: #a8488d;  --d-health-care: #c27fdd;  --d-health-behaviour: #8bad35;
+  --d-family-social: #755dc0;  --d-education: #0277ba;  --d-employment-income: #d1900b;
+  --d-attitudes: #827200;  --d-child-development: #7699fb;  --d-life-events: #af5504;
+  --d-omics: #12b0d4;  --d-pregnancy: #ed7668;  --d-administration: #128283;
 }
 
 * { box-sizing: border-box; }
@@ -999,8 +1021,41 @@ body.is-dragging-var .view-tab[data-view="basket"] {
   font-family: var(--mono); font-size: 11px; color: var(--ochre);
 }
 
+/* ── Topic areas ──────────────────────────────────────────────────────
+   Every top-level area has a colour: fifteen hues round the OKLCH wheel in
+   two lightness tiers, stepped separately for each theme, ordered so that
+   neighbouring rows of the Topics tree differ most. Fifteen is more than
+   anyone tells apart pair by pair — some, colour-blind readers above all,
+   will look alike — so colour is a hint for scanning and never the only
+   cue: a chip always names its topic, and its tooltip the area. It marks,
+   never text: labels stay in ink. A row is striped by its strongest topic's
+   area, on the name rather than the row's edge, which is the selection's. */
+
+[data-domain="demographics"] { --dom: var(--d-demographics); }
+[data-domain="housing_environment"] { --dom: var(--d-housing-environment); }
+[data-domain="physical_health"] { --dom: var(--d-physical-health); }
+[data-domain="mental_health"] { --dom: var(--d-mental-health); }
+[data-domain="health_care"] { --dom: var(--d-health-care); }
+[data-domain="health_behaviour"] { --dom: var(--d-health-behaviour); }
+[data-domain="family_social"] { --dom: var(--d-family-social); }
+[data-domain="education"] { --dom: var(--d-education); }
+[data-domain="employment_income"] { --dom: var(--d-employment-income); }
+[data-domain="attitudes"] { --dom: var(--d-attitudes); }
+[data-domain="child_development"] { --dom: var(--d-child-development); }
+[data-domain="life_events"] { --dom: var(--d-life-events); }
+[data-domain="omics"] { --dom: var(--d-omics); }
+[data-domain="pregnancy"] { --dom: var(--d-pregnancy); }
+[data-domain="administration"] { --dom: var(--d-administration); }
+.vrow .v-name { box-shadow: inset 3px 0 0 var(--dom, transparent); padding-left: 7px; }
+.vhead span:nth-child(2) { padding-left: 7px; }
+.topic-chip, .vm-topic { box-shadow: inset 3px 0 0 var(--dom, transparent); }
+.dom-swatch {
+  display: inline-block; flex: none; width: 9px; height: 9px; margin-right: 6px; border-radius: 2px;
+  background: var(--dom, transparent); vertical-align: baseline;
+}
+
 .topic-chip {
-  display: inline-block; padding: 0 6px;
+  display: inline-block; padding: 0 6px 0 8px;
   border: 1px solid var(--rule); border-radius: 2px;
   font-family: var(--sans); font-size: 11px; line-height: 1.6; color: var(--ink-2);
   white-space: nowrap;
