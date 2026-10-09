@@ -10,6 +10,7 @@
 import { $, $$ } from "./dom.js";
 import { DRAG_MIME, esc, isIdentifier, state, storeKey, waveKeys } from "./state.js";
 import { renderSpine } from "./spine.js";
+import { onShow } from "./views.js";
 
 /* What else to redraw when the selection changes. Set by boot.js, so this
    module does not import the search view back. */
@@ -19,7 +20,18 @@ let openFile = () => {};
 export const onOpenFile = (fn) => { openFile = fn; };
 
 const keyOf = (b) => `${b.file}:${b.name}`;
-export const has = (file, name) => state.bundle.some((b) => b.file === file && b.name === name);
+
+/* Asked once per row drawn and per result checked, so with thousands
+   selected it is a set lookup, not a scan. The bundle only ever grows in
+   place (push) or is replaced, so its identity and length say whether the
+   set still matches it. */
+let index = { of: null, n: -1, keys: new Set() };
+export function has(file, name) {
+  if (index.of !== state.bundle || index.n !== state.bundle.length) {
+    index = { of: state.bundle, n: state.bundle.length, keys: new Set(state.bundle.map(keyOf)) };
+  }
+  return index.keys.has(`${file}:${name}`);
+}
 
 /* The intersection of a valid R name, a valid Python identifier-ish column
    and a CSV header that survives any tool. */
@@ -96,6 +108,11 @@ export function removeMany(items) {
   return removed;
 }
 
+export function clear() {
+  state.bundle = [];
+  save(); render();
+}
+
 export function toggle(item) {
   return has(item.file, item.name) ? remove(`${item.file}:${item.name}`) : add(item);
 }
@@ -123,6 +140,8 @@ export function restoreOptions() {
       if ([30, 50, 70, 90].includes(saved.minConf)) state.options.minConf = saved.minConf;
       state.options.gridShade = saved.gridShade === "abs" ? "abs" : "row";
       if (["csv", "dta", "sav"].includes(saved.outputFormat)) state.options.outputFormat = saved.outputFormat;
+      state.options.panelOpen = saved.panelOpen === true;
+      state.options.panelGroup = saved.panelGroup === "file" ? "file" : "wave";
     }
   } catch { /* defaults */ }
 }
@@ -188,17 +207,23 @@ export function problems() {
 
 /* ── Rendering ───────────────────────────────────────────────────────── */
 
+/* The Selection view's panes are drawn only while it is showing, and when
+   it is switched to: with thousands selected they are the slowest thing on
+   the page, and every click in the list would otherwise redraw them unseen. */
 export function render() {
   notify();
-  renderList();
-  renderDetail();
-  if (state.view === "basket") renderSpine();
-}
-
-function renderList() {
   const n = state.bundle.length;
   $("#basket-tally").textContent = n;
   $("#basket-tally").hidden = n === 0;
+  if (state.view !== "basket") return;
+  renderList();
+  renderDetail();
+  renderSpine();
+}
+onShow("basket", () => { renderList(); renderDetail(); });
+
+function renderList() {
+  const n = state.bundle.length;
   $("#basket-clear").hidden = n === 0;
   const count = $("#basket-count");
   if (!count.classList.contains("is-saying")) {
@@ -432,7 +457,7 @@ async function download() {
 /* ── Wiring ──────────────────────────────────────────────────────────── */
 
 export function wire() {
-  $("#basket-clear").addEventListener("click", () => { state.bundle = []; save(); render(); });
+  $("#basket-clear").addEventListener("click", clear);
   $("#basket-list").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-remove]");
     if (btn) remove(btn.dataset.remove);

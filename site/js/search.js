@@ -109,6 +109,12 @@ function renderFilters() {
 const selectableMatches = () =>
   state.matches.filter((r) => !cannotSelect(r, state.manifest.files[r[2]]));
 
+/* The selection changed but the matches didn't: redraw what shows it. */
+export function refreshSelection() {
+  renderResults();
+  renderSelectAll();
+}
+
 function renderSelectAll() {
   const btn = $("#select-all");
   const rows = selectableMatches();
@@ -192,7 +198,7 @@ export function renderResults() {
   } else {
     $("#results").innerHTML =
       `<li class="vhead" aria-hidden="true"><span></span><span>Variable</span><span>Label</span>
-         <span>${esc(state.manifest.wave.term)}</span><span>File</span><span>Topics</span><span></span></li>` +
+         <span>${esc(state.manifest.wave.term)}</span><span class="v-file">File</span><span class="v-topics">Topics</span><span></span></li>` +
       shown.map((row, i) => rowHtml(row, i, q, keys)).join("");
   }
   const more = $("#more");

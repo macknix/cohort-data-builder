@@ -42,7 +42,8 @@
   <!-- ── Variables ─────────────────────────────────────────────────────
        One page, top to bottom: an overview of what the study holds (every
        sweep, every topic), a filter bar, and the variables themselves,
-       each opening in place, in a box that scrolls on its own. -->
+       each opening in place, in a box that scrolls on its own. Beside the
+       filter bar and the list, what you have selected so far. -->
   <section class="view is-current" data-view="search">
 
     <section class="overview" id="overview" aria-label="What the study holds">
@@ -77,6 +78,8 @@
       </div>
     </section>
 
+    <div class="vwork">
+    <div class="vmain">
     <div class="filterbar" id="filterbar">
       <label class="fb-search">
         <span class="visually-hidden">Search variables</span>
@@ -89,12 +92,33 @@
         <span class="fb-count" id="result-count">—</span>
         <button class="link-btn" id="select-all" hidden></button>
         <button class="link-btn" id="clear-filters" hidden>Clear</button>
+        <button class="link-btn sp-toggle" id="sp-toggle" aria-controls="spanel" aria-expanded="false">Selected (0)</button>
       </div>
     </div>
 
     <div class="vscroll" id="vscroll" role="region" aria-label="Variables" tabindex="0">
       <ol class="vtable" id="results"></ol>
       <div class="vmore" id="more" hidden></div>
+    </div>
+    </div>
+
+    <aside class="spanel" id="spanel" aria-label="Selected variables">
+      <div class="sp-head">
+        <p class="sp-count" id="sp-count" role="status" aria-live="polite">Nothing selected yet</p>
+        <button class="link-btn" id="sp-clear" hidden>Clear</button>
+      </div>
+      <div class="sp-tools" id="sp-tools" hidden>
+        <input type="search" id="sp-q" placeholder="Filter selection…" aria-label="Filter the selection"
+               autocomplete="off" spellcheck="false">
+        <div class="sp-group" role="group" aria-label="Group by">
+          <button id="sp-group-wave" data-group="wave" aria-pressed="true">Sweep</button>
+          <button data-group="file" aria-pressed="false">File</button>
+        </div>
+      </div>
+      <p class="sp-warn" id="sp-warn" hidden></p>
+      <div class="sp-list" id="sp-list" tabindex="0" role="region" aria-label="Selected variables, by group"></div>
+      <div class="sp-foot"><button class="btn btn-primary" id="sp-review" hidden>Review &amp; download →</button></div>
+    </aside>
     </div>
   </section>
 

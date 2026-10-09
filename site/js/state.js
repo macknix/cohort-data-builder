@@ -36,7 +36,10 @@ export const state = {
   // The topic rows start collapsed on every visit, so the page opens on the
   // sweep bars and the list; gridOpen is not remembered between visits.
   options: { languages: ["r", "python"], missingToNa: true, minConf: 50,
-             gridOpen: false, gridShade: "row", outputFormat: "csv" },
+             gridOpen: false, gridShade: "row", outputFormat: "csv",
+             // The selection panel: shown beside the list on a mid-width
+             // screen (always on a wide one), grouped by "wave" or "file".
+             panelOpen: false, panelGroup: "wave" },
   templates: null,   // data/templates.json, fetched at first download
   view: "search",
 };
