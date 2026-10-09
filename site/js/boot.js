@@ -45,7 +45,7 @@ async function boot() {
          "<code>python3 -m http.server -d site</code>");
     return;
   }
-  if (!state.catalogue.length) { fail("No datasets have been built."); return; }
+  if (!state.catalogue.length) { fail("No cohorts have been built."); return; }
 
   $("#dataset").innerHTML = state.catalogue.map((d) =>
     `<option value="${d.key}">${d.name}</option>`).join("");
