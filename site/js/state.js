@@ -35,7 +35,9 @@ export const state = {
   bundle: [],
   // The topic rows start collapsed on every visit, so the page opens on the
   // sweep bars and the list; gridOpen is not remembered between visits.
-  options: { languages: ["r", "python"], missingToNa: true, minConf: 50,
+  // Missing codes stay as deposited unless asked: converting them can lose
+  // answers a dictionary files under a negative code.
+  options: { languages: ["r", "python"], missingToNa: false, minConf: 50,
              gridOpen: false, gridShade: "row", outputFormat: "csv",
              // The selection panel: shown beside the list on a mid-width
              // screen (always on a wide one), grouped by "wave" or "file".

@@ -142,28 +142,74 @@ def parse_missing(text: str | None) -> tuple[list[float], list[list[float | None
     return values, ranges, True
 
 
-def na_codes(missing_text: str | None, labels: list[dict]) -> dict | None:
-    """What 'missing codes to NA' replaces for one variable.
+# What a missing-value label says, in the dictionaries' many spellings. Read
+# against the label with everything but letters squeezed out, so "Not applic
+# able" and "Don't know" match too; the short forms (NA, NS, NK) only as words.
+MISSING_WORDS = re.compile(
+    r"notapplic|doesnotapply|notstated|notknown|unknown|dontknow|refus|blank|unanswered|"
+    r"notanswered|noanswer|noresponse|noinformation|incompleteinfo|vague|notattempted|"
+    r"notscorab|notcodeable|outofrange|questionnaire|notestbooklet|notests|"
+    r"inappropriateanswer|morethananswer|unabletoexamine|noestimation|"
+    r"nocheckpossible|notgiven|notasked|illegible|hidena|alphaspresent|unbelievable|"
+    # How a survey records an item it didn't get: nobody interviewed, the
+    # script or the interviewer went wrong, too little or too much said.
+    r"notinterviewed|scripterror|problemwithscript|missedquestion|insuffic|insufficent|"
+    r"notenoughinfo|notcompleted|unabletocomplete|notreceived|misidentified|notidentified|"
+    r"invalid|multicode|multipleresp|morethanoneanswer|morethananswr|unclear|declined|"
+    r"dontwanttoanswer|inconsistent|unabletoclassify|cantcode|nocodeavailable|notcomputed|"
+    r"irrelvnt|usinginterpreter|problemwithsample|unabletocode|notcalculable|notcalculated")
+MISSING_SHORT = re.compile(r"(^|[^a-z])(n\.?a|n/a|n\.?s|n\.?k|miss)($|[^a-z])|\bmissing\b")
 
-    The declared SPSS user-missing values, plus any negative code that carries
-    a value label. The second matters: many BCS70 variables declare nothing,
-    yet label -2 "Not known" or -1 "Not applicable".
+
+def looks_missing(label: str) -> bool:
+    """Whether a value label says "no answer" rather than giving one."""
+    low = str(label or "").lower()
+    return bool(MISSING_WORDS.search(re.sub(r"[^a-z]", "", low)) or MISSING_SHORT.search(low))
+
+
+def na_codes(missing_text: str | None, labels: list[dict]) -> dict | None:
+    """What 'missing codes to NA' replaces for one variable, and what it keeps.
+
+    The declared SPSS user-missing values, plus any undeclared negative code
+    whose label says it is missing: many BCS70 variables declare nothing, yet
+    label -2 "Not known" or -1 "Not applicable". An undeclared negative code
+    with any other label is a real answer (T01FACE -1 "Dislike", e022b -8
+    "Never Immunised") and is kept, listed under "kept". Declared codes are the
+    depositor's call and always convert, but one whose label reads like an
+    answer (hd9.1 -4 "No alc past 4 wks") is listed under "lossy", since
+    converting it loses something.
     """
     values, ranges, _ = parse_missing(missing_text)
     covered = set(values)
+    declared = lambda x: x in covered or any(  # noqa: E731
+        (lo is None or x >= lo) and (hi is None or x <= hi) for lo, hi in ranges)
+    tidy = lambda x: int(x) if x is not None and float(x).is_integer() else x  # noqa: E731
+    kept, lossy = [], []
     for v in labels:
         x = number(str(v.get("value", "")))
-        if x is None or x >= 0 or x in covered:
+        if x is None:
             continue
-        if any((lo is None or x >= lo) and (hi is None or x <= hi) for lo, hi in ranges):
+        label = str(v.get("label", "")).strip()
+        if declared(x):
+            if label and not looks_missing(label):
+                lossy.append([tidy(x), label])
             continue
-        values.append(x)
-        covered.add(x)
-    if not values and not ranges:
+        if x >= 0:
+            continue
+        if looks_missing(label):
+            values.append(x)
+            covered.add(x)
+        else:
+            kept.append([tidy(x), label])
+    if not values and not ranges and not kept:
         return None
-    tidy = lambda x: int(x) if x is not None and float(x).is_integer() else x  # noqa: E731
-    return {"values": sorted(tidy(v) for v in values),
-            "ranges": [[tidy(lo), tidy(hi)] for lo, hi in ranges]}
+    out = {"values": sorted(tidy(v) for v in values),
+           "ranges": [[tidy(lo), tidy(hi)] for lo, hi in ranges]}
+    if kept:
+        out["kept"] = sorted(kept)
+    if lossy:
+        out["lossy"] = sorted(lossy)
+    return out
 
 
 def read_csv(path: Path) -> tuple[list[str], list[dict]]:

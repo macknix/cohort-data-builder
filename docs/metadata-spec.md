@@ -89,8 +89,29 @@ a download, because there is nothing to merge them on.
 The download's **missing codes to NA** option replaces, per variable:
 
 1. the codes declared in `spss_user_missing_values`, and
-2. any **negative** code that has a value label (many variables declare
-   nothing but label `-2` "Not known").
+2. any other **negative** code whose value label says it is missing (many
+   variables declare nothing but label `-2` "Not known").
+
+The option is off by default: a download keeps every code as deposited
+unless asked.
+
+"Says it is missing" is `looks_missing()` in `build.py`: the label mentions
+not applicable / does not apply, not stated, not known, don't know, refused,
+blank, unanswered / not answered, no response or information, vague, not
+attempted / scorable / codeable, out of range, no questionnaire or tests,
+inappropriate answer, not asked, illegible, missing, or is NA / NS / NK.
+Spacing slips in the dictionaries ("Not applic able") still match.
+
+A negative code with **any other** label is a real answer and is kept, even
+with the option on: BCS70 `T01FACE` −1 "Dislike", `e022b` −8 "Never
+Immunised", `bd3regn` −2 "Armed Services", `a0295` −4 "Stillbirth/Abortion",
+`a0366a` −7 "No Move". The build lists these as `kept`, the variable's
+details show them, and `codebook.csv` has them in `negative_kept`.
+
+Declared codes are the depositor's call and always convert. Where one is
+labelled like an answer (BCS70 `hd9.1` −4 "No alc past 4 wks", routing
+information), the build lists it as `lossy` and the details mark it ⚠:
+converting it loses that answer.
 
 UKDA writes a list of discrete missing codes in the same `A thru B and C`
 form as a genuine range, so the build reads it conservatively:

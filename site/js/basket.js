@@ -126,7 +126,8 @@ function save() {
 }
 
 export function saveOptions() {
-  try { localStorage.setItem(storeKey("options", "_site"), JSON.stringify(state.options)); }
+  const { missingToNa, ...rest } = state.options;
+  try { localStorage.setItem(storeKey("options", "_site"), JSON.stringify({ ...rest, missingToNaV2: missingToNa })); }
   catch { /* as above */ }
 }
 
@@ -136,7 +137,9 @@ export function restoreOptions() {
     if (saved && Array.isArray(saved.languages)) {
       state.options.languages = saved.languages.filter((l) => l === "r" || l === "python");
       if (!state.options.languages.length) state.options.languages = ["r", "python"];
-      state.options.missingToNa = saved.missingToNa !== false;
+      // Saved under a new name: the old one held the old default (on) for
+      // everyone, not a choice, so all start from off once.
+      state.options.missingToNa = saved.missingToNaV2 === true;
       if ([30, 50, 70, 90].includes(saved.minConf)) state.options.minConf = saved.minConf;
       state.options.gridShade = saved.gridShade === "abs" ? "abs" : "row";
       if (["csv", "dta", "sav"].includes(saved.outputFormat)) state.options.outputFormat = saved.outputFormat;
@@ -329,7 +332,7 @@ function renderDetail() {
       <div class="option-row">
         <span class="option-name">Missing codes</span>
         <label><input type="checkbox" id="opt-na" ${missingToNa ? "checked" : ""}> Convert to NA</label>
-        <p class="option-help">Replaces each variable's declared missing-value codes, and any negative code with a value label, with NA. Off keeps the codes as deposited. Either way it is one setting at the top of the script, and <code>codebook.csv</code> lists the codes.</p>
+        <p class="option-help">Replaces each variable's declared missing-value codes, and any other negative code labelled as missing ("Not known", "Refused"…), with NA. A negative code with any other label is a real answer and is kept. Off keeps every code as deposited. Either way it is one setting at the top of the script, and <code>codebook.csv</code> lists the codes.</p>
       </div>
     </div>
     <div class="detail-actions">

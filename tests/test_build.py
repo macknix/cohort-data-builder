@@ -52,6 +52,73 @@ class MissingValues(unittest.TestCase):
         self.assertIsNone(build.na_codes(None, [{"value": "1.0", "label": "Yes"}]))
 
 
+def labelled(*pairs):
+    return [{"value": f"{x}.0", "label": label} for x, label in pairs]
+
+
+class NegativeAnswers(unittest.TestCase):
+    """#13: an undeclared negative code is missing only if its label says so;
+    one labelled as an answer is kept. The cases are BCS70's own."""
+
+    def test_missing_labels(self):
+        for label in ["Not applicable", "Not applic able", "-1 Not applicable", "Does not apply",
+                      "Not stated", "Not Known", "NotKnown", "Don't know", "Refusal", "Refused",
+                      "Blank", "Unanswered", "Vague", "Not scorab le", "No tests c ase",
+                      "No DHS Questionnaire", "NA", "NA:Fetal Death", "Diseases N.S", "NS/NK",
+                      "bled: date NK", "Missing value -8", "Other miss-see HK VA", "HideNA",
+                      "Out of range", "No information"]:
+            with self.subTest(label=label):
+                self.assertTrue(build.looks_missing(label))
+
+    def test_answer_labels(self):
+        for label in ["Dislike", "Never Immunised", "Armed Services", "Stillbirth/Abortion",
+                      "No Move", "Caesarean", "3 Tet only", "Never had a period", "Unable to speak",
+                      "Subject given, but cant be classified anywhere else", "No alc past 4 wks"]:
+            with self.subTest(label=label):
+                self.assertFalse(build.looks_missing(label))
+
+    def test_t01face_keeps_dislike(self):
+        # Declares -2 only; -1 "Dislike" is an answer.
+        na = build.na_codes("-2.0 thru None", labelled((-2, "No answer"), (-1, "Dislike"),
+                                                        (0, "Not Mind"), (1, "Like")))
+        self.assertEqual(na, {"values": [-2], "ranges": [], "kept": [[-1, "Dislike"]]})
+
+    def test_e022b_keeps_never_immunised(self):
+        na = build.na_codes(None, labelled((-9, "Diseases N.S"), (-8, "Never Immunised"),
+                                           (-7, "No Information"), (-3, "Not Stated")))
+        self.assertEqual(na["values"], [-9, -7, -3])
+        self.assertEqual(na["kept"], [[-8, "Never Immunised"]])
+
+    def test_bd3regn_keeps_armed_services(self):
+        na = build.na_codes("-1.0 thru None", labelled((-2, "Armed Services"), (-1, "Unknown"),
+                                                        (1, "North")))
+        self.assertEqual(na, {"values": [-1], "ranges": [], "kept": [[-2, "Armed Services"]]})
+
+    def test_a0295_keeps_stillbirth(self):
+        na = build.na_codes(None, labelled((-4, "Stillbirth/Abortion"), (-3, "Not Stated"),
+                                           (-2, "Not Known"), (-1, "NA:Fetal Death"), (1, "Yes")))
+        self.assertEqual(na, {"values": [-3, -2, -1], "ranges": [],
+                              "kept": [[-4, "Stillbirth/Abortion"]]})
+
+    def test_a0366a_keeps_no_move(self):
+        na = build.na_codes(None, labelled((-7, "No Move"), (-3, "Not Stated"), (-1, "NA"),
+                                           (0, "No")))
+        self.assertEqual(na, {"values": [-3, -1], "ranges": [], "kept": [[-7, "No Move"]]})
+
+    def test_declared_answer_is_flagged_lossy(self):
+        # hd9.1 declares -1 and below; -4 "No alc past 4 wks" is routing
+        # information that converting loses, so it is flagged, still converted.
+        na = build.na_codes("-1.7976931348623155e+308 thru -1.0",
+                            labelled((-4, "No alc past 4 wks"), (-2, "Not stated"),
+                                     (-1, "No questionnaire"), (1, "Yes")))
+        self.assertEqual(na, {"values": [], "ranges": [[None, -1]],
+                              "lossy": [[-4, "No alc past 4 wks"]]})
+
+    def test_only_kept_codes_still_reported(self):
+        self.assertEqual(build.na_codes(None, labelled((-1, "Dislike"), (1, "Like"))),
+                         {"values": [], "ranges": [], "kept": [[-1, "Dislike"]]})
+
+
 SAMPLE_RTF = rb"""{\rtf1\ansi\deff0{\fonttbl{\f0\fswiss MS Sans Serif;}}{\colortbl;\red0\green0\blue0;}
 {\f2\fs20\cf1 File Name = \f2\fs20\cf5 demo\par }{\f2\fs20\cf1 Number of variables = \cf5 2\par }
 {\cf1\b\par Pos. = }{\f2\fs20\cf4 1	}{\b\cf1 Variable = }{\f2\fs20\cf4 NSID	}{\b\cf1 Variable label = }{\cf4 Cohort member identifier \par }

@@ -473,6 +473,8 @@ code, kbd { font-family: var(--mono); font-size: .92em; }
 .vm-code { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink); }
 .vm-values.is-na { font-size: 12px; color: var(--ink-3); }
 .vm-values.is-na .vm-code { color: var(--ochre); font-weight: 400; }
+.vm-values.is-na .vm-lossy { color: var(--ochre); }
+.vm-kept .vm-code { font-weight: 700; color: var(--ink); }
 .vm-topics, .vm-also { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
 .vm-key {
   min-width: 10ch;

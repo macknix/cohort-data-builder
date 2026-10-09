@@ -43,16 +43,20 @@ HAVE_PYREADSTAT = importlib.util.find_spec("pyreadstat") is not None
 PICKS = [
     "bcs7072a:a0002",
     "bcs7072a:a0005a:mother_age",
+    "bcs7072a:a0295",
     "bcs3derived:bd3inc",
     "bcs3derived:bd3psoc",
+    "bcs3derived:bd3regn",
     "bcs70_age16-51_activity_histories_long:wsweep05",
 ]
 
+# a0295 declares nothing: -4 "Stillbirth/Abortion" is an answer, -2 "Not
+# Known" is missing.
 TAB = (
-    "bcsid\ta0002\ta0005a\ta0014\n"
-    "b10001n \t0\t25\t1\n"
-    "B10002P\t1\t-2\t2\n"
-    "B10003Q\t0\t31\t-2\n"
+    "bcsid\ta0002\ta0005a\ta0014\ta0295\n"
+    "b10001n \t0\t25\t1\t-4\n"
+    "B10002P\t1\t-2\t2\t-2\n"
+    "B10003Q\t0\t31\t-2\t1\n"
 )
 
 MAKE_BINARY = r"""
@@ -60,7 +64,8 @@ library(haven)
 args <- commandArgs(trailingOnly = TRUE)
 dir.create(file.path(args[1], "sub"), showWarnings = FALSE)
 dta <- data.frame(BCSID = c("B10001N", "B10002P", "B10004R"),
-                  bd3inc = c(3, -1, 8), bd3psoc = c(-2, 4, -1), other = 1:3)
+                  bd3inc = c(3, -1, 8), bd3psoc = c(-2, 4, -1), bd3regn = c(-2, -1, 3),
+                  other = 1:3)
 write_dta(dta, file.path(args[1], "sub", "bcs3derived.dta"))
 sav <- data.frame(
   bcsid = c("B10001N", "B10001N", "B10002P"),
@@ -154,6 +159,13 @@ class GeneratedScripts(unittest.TestCase):
         self.assertEqual(num(merged["B10004R"]["bd3inc"]), None if self.na else 8)
         self.assertEqual(num(merged["B10002P"]["bd3psoc"]), 4)
         self.assertEqual(num(merged["B10001N"]["bd3psoc"]), None if self.na else -2)
+        # A negative code labelled as an answer is kept even when converting
+        # (#13): a0295 -4 "Stillbirth/Abortion" (nothing declared), and bd3regn
+        # -2 "Armed Services" (only -1 declared).
+        self.assertEqual(num(merged["B10001N"]["a0295"]), -4)
+        self.assertEqual(num(merged["B10002P"]["a0295"]), None if self.na else -2)
+        self.assertEqual(num(merged["B10001N"]["bd3regn"]), -2)
+        self.assertEqual(num(merged["B10002P"]["bd3regn"]), None if self.na else -1)
         # The long file is kept apart, with its SPSS user-missing code intact
         # unless converting (9 is not in the dictionary, so it survives).
         long = got["bcs70_age16-51_activity_histories_long_long.csv"]
@@ -229,3 +241,33 @@ def _isnum(v: str) -> bool:
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(HAVE_NODE, "node is not installed")
+@unittest.skipUnless((ROOT / "site/data/templates.json").exists(), "run build.py first")
+class CodebookKeptCodes(unittest.TestCase):
+    """The codebook says which negative codes are answers, and the scripts
+    leave them out of the codes they replace (#13). Needs only node."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = Path(tempfile.mkdtemp())
+        subprocess.run(["node", str(ROOT / "tests/generate_bundle.mjs"), "bcs70", str(cls.tmp),
+                        "true", "csv", "bcs7072a:a0295", "bcs3derived:bd3regn", "bcs7072a:a0366a"],
+                       check=True, capture_output=True, text=True)
+        cls.codebook = {r["column"]: r for r in read(cls.tmp / "codebook.csv")}
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_kept_codes_are_listed(self):
+        self.assertEqual(self.codebook["a0295"]["negative_kept"], "-4=Stillbirth/Abortion")
+        self.assertEqual(self.codebook["bd3regn"]["negative_kept"], "-2=Armed Services")
+        self.assertEqual(self.codebook["a0366a"]["negative_kept"], "-7=No Move")
+
+    def test_kept_codes_are_not_replaced(self):
+        self.assertEqual(self.codebook["a0295"]["missing_codes"], "-3, -2, -1")
+        self.assertEqual(self.codebook["a0366a"]["missing_codes"], "-3, -1")
+        py = (self.tmp / "python/merge.py").read_text()
+        self.assertIn('"a0295": {"values": [-3, -2, -1], "ranges": []}', py)

@@ -262,9 +262,18 @@ function valuesHtml(row, entry) {
     ? `<li><button class="link-btn" data-values="${esc(key)}">+ ${rest} more</button></li>`
     : all && answers.length > VALUES_SHOWN
       ? `<li><button class="link-btn" data-values="${esc(key)}">fewer</button></li>` : "";
+  // A declared missing code whose label reads like an answer: converting it
+  // loses that answer, so it says so.
+  const lossy = new Set((na?.lossy || []).map(([x]) => x));
+  const naItem = (v) => lossy.has(parseFloat(v.value))
+    ? `<li class="vm-lossy" title="Declared missing, but labelled like an answer: converting to NA loses it"><span class="vm-code">${esc(code(v))}</span> ${esc(v.label)} ⚠</li>`
+    : item(v);
+  const kept = na?.kept || [];
   return `${answers.length ? `<ul class="vm-values">${list.map(item).join("")}${toggle}</ul>` : ""}
     ${missing.length ? `<ul class="vm-values is-na" title="Missing-value codes: become NA in a download with that option on">
-      <li class="vm-key">Missing</li>${missing.map(item).join("")}</ul>` : ""}`;
+      <li class="vm-key">Missing</li>${missing.map(naItem).join("")}</ul>` : ""}
+    ${kept.length ? `<p class="vm-note vm-kept" title="Negative, but labelled as an answer: never converted to NA">Kept as answers:
+      ${kept.map(([x, l]) => `<span class="vm-code">${esc(x)}</span> ${esc(l)}`).join(", ")}</p>` : ""}`;
 }
 
 /* The same label at other sweeps. Exact wording only (case and spacing
