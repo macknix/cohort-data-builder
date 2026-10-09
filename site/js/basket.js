@@ -69,7 +69,7 @@ function put({ name, label, file, wave }) {
   if (!name || !file || has(file, name)) return null;
   if (isIdentifier(name)) return `${name} is already in every download: it is what the files are merged on.`;
   const known = state.manifest.files.find((f) => f.name === file);
-  if (!known) return `${file} is not in this dataset.`;
+  if (!known) return `${file} is not in this cohort.`;
   if (!known.hasId) return `${file} has no ${state.manifest.identifier} column, so it cannot be merged.`;
   state.bundle.push({ name, label: label || "", file, wave: wave || known.wave,
                       column: defaultColumn(name, wave || known.wave, taken()) });

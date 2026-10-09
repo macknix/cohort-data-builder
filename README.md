@@ -13,7 +13,7 @@ on your own machine.
 
 ## Using it
 
-1. Pick a dataset and search by variable name or label. Filter by sweep (click
+1. Pick a cohort and search by variable name or label. Filter by sweep (click
    the axis), by measurement level, or by file.
 2. Add variables with **＋**. The **Selection** tab shows the output columns;
    rename any that clash.
@@ -23,7 +23,7 @@ on your own machine.
 The download is a small project:
 
 ```
-<dataset>-merge-<date>/
+<cohort>-merge-<date>/
   README.md          which data files are needed, and how to run it
   codebook.csv       every output column: source, label, value labels, missing codes
   data/              put the data files here (any format, subfolders fine)
